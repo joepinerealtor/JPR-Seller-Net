@@ -43,12 +43,13 @@
         input:checked + .slider { background-color: #B9212B; }
         input:checked + .slider:before { transform: translateX(22px); }
 
+        /* Larger State Toggle Styling */
         .state-btn {
-            padding: 4px 10px;
-            font-size: 9px;
+            padding: 8px 16px;
+            font-size: 12px;
             font-weight: 800;
             transition: all 0.2s;
-            border-radius: 4px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
             color: #64748b;
             text-transform: uppercase;
@@ -58,6 +59,7 @@
             background-color: #B9212B;
             border-color: #B9212B;
             color: white;
+            box-shadow: 0 4px 6px -1px rgba(185, 33, 43, 0.2);
         }
 
         @media print {
@@ -110,6 +112,7 @@
 </head>
 <body class="p-4 md:p-8">
     <div id="workbook-container" class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print-shadow border border-slate-100">
+        <!-- Header Section -->
         <div class="bg-[#B9212B] text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold tracking-tight uppercase">Seller Net Workbook</h1>
@@ -123,12 +126,13 @@
         </div>
 
         <div class="p-6 md:p-8 main-grid grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-[#B9212B] pb-1 gap-2">
+            <!-- Left Column: Inputs -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="flex flex-col sm:items-start justify-between border-b-2 border-[#B9212B] pb-2 gap-3">
                     <h2 class="text-lg font-bold text-slate-800 uppercase tracking-tighter">Sale Details</h2>
-                    <div class="flex gap-1 hide-on-print">
-                        <button id="btnRI" onclick="setState('RI')" class="state-btn active">Rhode Island</button>
-                        <button id="btnMA" onclick="setState('MA')" class="state-btn">Massachusetts</button>
+                    <div class="flex gap-2 hide-on-print w-full">
+                        <button id="btnRI" onclick="setState('RI')" class="state-btn active flex-1">Rhode Island</button>
+                        <button id="btnMA" onclick="setState('MA')" class="state-btn flex-1">Massachusetts</button>
                     </div>
                 </div>
                 
@@ -203,6 +207,7 @@
                 </div>
             </div>
 
+            <!-- Right Column: Results & Buttons -->
             <div class="lg:col-span-2 space-y-6">
                 <div id="resultsCard" class="bg-slate-50/50 rounded-xl p-6 md:p-8 space-y-6 border border-slate-100 print:bg-transparent print:p-0 print:border-none">
                     <div>
