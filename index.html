@@ -57,8 +57,8 @@
 
         @media print {
             @page {
-                size: portrait;
-                margin: 0.25in;
+                size: a4 portrait;
+                margin: 0.3in;
             }
             body {
                 background-color: white !important;
@@ -67,29 +67,72 @@
             .hide-on-print {
                 display: none !important;
             }
+            #workbook-container {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
             #top-header, #input-column {
                 display: none !important;
             }
             #output-column {
                 width: 100% !important;
                 display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             .main-grid {
                 display: block !important;
+                padding: 0 !important;
             }
             #snapshot-target {
                 padding: 0 !important;
                 border: none !important;
                 box-shadow: none !important;
                 width: 100% !important;
+                background-color: transparent !important;
             }
             #resultsCard {
                 background-color: transparent !important;
                 padding: 0 !important;
                 border: none !important;
             }
-            h2 { font-size: 1.4rem !important; margin-bottom: 1rem !important; border-bottom: 3px solid #B9212B !important; }
+            h2 { 
+                font-size: 1.25rem !important; 
+                margin-bottom: 0.4rem !important; 
+                border-bottom: 3px solid #B9212B !important; 
+                padding-bottom: 2px !important;
+            }
             .kw-red-text { color: #B9212B !important; }
+            
+            /* Print Layout Fixes */
+            .branding-row {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                text-align: left !important;
+            }
+            .contact-block {
+                text-align: left !important;
+            }
+            
+            .space-y-8 { margin-top: 0.4rem !important; margin-bottom: 0.4rem !important; }
+            .space-y-5 { margin-top: 0.2rem !important; margin-bottom: 0.2rem !important; }
+            .pt-6 { padding-top: 0.5rem !important; }
+            .mt-6 { margin-top: 0.5rem !important; }
+            .pb-3 { padding-bottom: 0.2rem !important; }
+            .mb-6 { margin-bottom: 0.3rem !important; }
+            
+            .branding-footer {
+                padding-top: 0.4rem !important;
+            }
+            .logo-stack {
+                border-left: 2px solid #f1f5f9 !important;
+                padding-left: 1rem !important;
+                gap: 0.5rem !important;
+            }
         }
     </style>
 </head>
@@ -132,7 +175,7 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Seller Credits</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -147,16 +190,15 @@
                         </div>
                         <div class="relative flex items-center">
                             <span id="listingSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
-                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
-                    <!-- Buyer Broker Commission (Updated Inline Toggles) -->
+                    <!-- Buyer Broker Commission -->
                     <div class="input-group">
                         <div class="flex items-center justify-between mb-1">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Buyer Broker Commission</label>
                             <div class="flex gap-2">
-                                <!-- Basis Toggle now inline with Type Toggle -->
                                 <div id="buyerBasisContainer" class="type-toggle">
                                     <button onclick="setCommBasis('gross')" id="basisGross" class="type-btn active">Gross</button>
                                     <button onclick="setCommBasis('net')" id="basisNet" class="type-btn">Net</button>
@@ -169,7 +211,7 @@
                         </div>
                         <div class="relative flex items-center">
                             <span id="buyerSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
-                            <input type="number" id="buyerCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="buyerCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -186,7 +228,7 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Mortgage Payoff (Est.)</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="mortgagePayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="mortgagePayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -194,7 +236,7 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Additional Payoff (Est.)</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -202,68 +244,68 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Closing Cost (Est.)</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="miscCosts" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="miscCosts" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Right Column: Results -->
-            <div id="output-column" class="lg:col-span-7 space-y-8">
-                <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-6 md:p-10 space-y-8 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
+            <div id="output-column" class="lg:col-span-7 space-y-8 print:space-y-2">
+                <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-6 md:p-10 space-y-8 print:space-y-4 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
                     <div id="resultsCard">
-                        <h2 class="text-xl font-black text-slate-900 mb-6 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
+                        <h2 class="text-xl font-black text-slate-900 mb-6 print:mb-2 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
                         
-                        <div class="space-y-5 print:space-y-4">
-                            <div class="flex justify-between items-center text-xl pb-3 border-b-2 border-slate-200">
+                        <div class="space-y-5 print:space-y-2">
+                            <div class="flex justify-between items-center text-xl print:text-lg pb-3 border-b-2 border-slate-200">
                                 <span class="text-slate-600 font-bold">Sales Price</span>
                                 <span class="font-black text-slate-900" id="dispSalesPrice">$0.00</span>
                             </div>
 
-                            <div class="space-y-4 pt-1 print:space-y-3">
-                                <div class="flex justify-between items-center text-base">
+                            <div class="space-y-4 pt-1 print:space-y-1">
+                                <div class="flex justify-between items-center text-base print:text-sm">
                                     <span class="text-slate-600 font-semibold">Seller Credits</span>
                                     <span class="text-[#B9212B] font-black" id="dispSellerCredits">$0.00</span>
                                 </div>
                                 
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <span class="text-slate-600 font-semibold text-base">Listing Broker Commission</span>
-                                        <p class="text-[11px] text-slate-400 italic font-medium" id="dispListingBasis">Based on Gross Sales Price</p>
+                                        <span class="text-slate-600 font-semibold text-base print:text-sm">Listing Broker Commission</span>
+                                        <p class="text-[11px] print:text-[9px] text-slate-400 italic font-medium" id="dispListingBasis">Based on Gross Sales Price</p>
                                     </div>
-                                    <span class="text-[#B9212B] font-black text-base" id="dispListingComm">$0.00</span>
+                                    <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispListingComm">$0.00</span>
                                 </div>
 
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <span class="text-slate-600 font-semibold text-base">Buyer Broker Commission</span>
-                                        <p class="text-[11px] text-slate-400 italic font-medium" id="dispBuyerBasis">Based on Gross Sales Price</p>
+                                        <span class="text-slate-600 font-semibold text-base print:text-sm">Buyer Broker Commission</span>
+                                        <p class="text-[11px] print:text-[9px] text-slate-400 italic font-medium" id="dispBuyerBasis">Based on Gross Sales Price</p>
                                     </div>
-                                    <span class="text-[#B9212B] font-black text-base" id="dispBuyerComm">$0.00</span>
+                                    <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispBuyerComm">$0.00</span>
                                 </div>
 
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <span id="resTaxLabel" class="text-slate-600 font-semibold text-base">RI Transfer Tax</span>
-                                        <p id="resTaxHelp" class="text-[10px] text-slate-400 italic text-right uppercase tracking-wider font-medium">Calculated at $3.75 per $500 sales price</p>
+                                        <span id="resTaxLabel" class="text-slate-600 font-semibold text-base print:text-sm">RI Transfer Tax</span>
+                                        <p id="resTaxHelp" class="text-[10px] print:text-[9px] text-slate-400 italic text-right uppercase tracking-wider font-medium">Calculated at $3.75 per $500 sales price</p>
                                     </div>
-                                    <span class="text-[#B9212B] font-black text-base" id="dispTransferTax">$0.00</span>
+                                    <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispTransferTax">$0.00</span>
                                 </div>
-                                <div class="flex justify-between items-center text-base">
+                                <div class="flex justify-between items-center text-base print:text-sm">
                                     <span class="text-slate-600 font-semibold">Mortgage Payoff</span>
                                     <span class="text-[#B9212B] font-black" id="dispMortgage">$0.00</span>
                                 </div>
-                                <div class="flex justify-between items-center text-base">
+                                <div class="flex justify-between items-center text-base print:text-sm">
                                     <span class="text-slate-600 font-semibold">Additional Payoff</span>
                                     <span class="text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
                                 </div>
-                                <div class="flex justify-between items-center text-base">
+                                <div class="flex justify-between items-center text-base print:text-sm">
                                     <span class="text-slate-600 font-semibold">Closing Cost</span>
                                     <span class="text-[#B9212B] font-black" id="dispMisc">$0.00</span>
                                 </div>
                             </div>
 
-                            <div class="mt-6 pt-6 border-t-4 border-[#B9212B] print:mt-5 print:pt-4">
+                            <div class="mt-6 pt-6 print:mt-2 print:pt-2 border-t-4 border-[#B9212B]">
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
                                     <span id="netLabel" class="text-xl font-black text-slate-900 uppercase tracking-tighter leading-tight">Estimated Net to Seller</span>
                                     <span class="text-4xl font-black text-green-700 print:text-3xl transition-colors" id="dispTotalNet">$0.00</span>
@@ -274,9 +316,9 @@
 
                     <!-- Branding Footer -->
                     <div class="pt-6 border-t border-slate-200 branding-footer">
-                        <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6">
+                        <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
                             <div class="flex items-center gap-6">
-                                <div class="relative w-28 h-28 shrink-0 print:w-24 print:h-24">
+                                <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
                                     <img 
                                         src="Joe (1).JPG" 
                                         alt="Joe Pine" 
@@ -284,26 +326,26 @@
                                         class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
                                     >
                                 </div>
-                                <div class="text-center md:text-left space-y-0.5">
-                                    <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-xl kw-red-text">Joe Pine</p>
-                                    <p class="text-slate-700 font-black text-sm uppercase tracking-widest">REALTOR® RI & MA</p>
-                                    <div class="text-slate-600 text-xs space-y-1 font-semibold leading-normal">
+                                <div class="text-center md:text-left space-y-0.5 contact-block">
+                                    <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-lg kw-red-text leading-tight">Joe Pine</p>
+                                    <p class="text-slate-700 font-black text-sm print:text-xs uppercase tracking-widest leading-tight">REALTOR® RI & MA</p>
+                                    <div class="text-slate-600 text-xs print:text-[10px] space-y-0.5 font-semibold leading-normal">
                                         <p>401.327.0888</p>
                                         <p>JoePine@KW.com</p>
                                         <p>28 Thurber Blvd, Smithfield, RI 02917</p>
-                                        <p class="text-[#B9212B] font-black text-sm mt-0.5 underline">www.JoePine.com</p>
+                                        <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline">www.JoePine.com</p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-6">
-                                <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto" onerror="this.style.display='none'">
-                                <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px]" onerror="this.style.display='none'">
+                            <div class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-4 print:gap-2 logo-stack">
+                                <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
+                                <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
                             </div>
                         </div>
 
-                        <div class="mt-4 p-4 bg-slate-100/50 rounded-2xl border border-slate-200 print:p-0 print:bg-transparent print:border-none">
-                            <p id="legal-disclaimer" class="text-[11px] md:text-[12px] text-slate-500 leading-relaxed italic text-center md:text-left font-semibold">
+                        <div class="mt-4 p-4 bg-slate-100/50 rounded-2xl border border-slate-200 print:p-2 print:mt-2 print:bg-transparent print:border-none">
+                            <p id="legal-disclaimer" class="text-[11px] md:text-[12px] print:text-[9px] text-slate-500 leading-relaxed italic text-center md:text-left font-semibold">
                                 This estimate is provided for informational purposes only and does not represent a guarantee of final proceeds. Rhode Island transfer tax is calculated at $3.75 per $500 of the sales price and Massachusetts transfer tax is calculated at $2.28 per $500 of the sales price. Estimated proceeds may change due to final settlement adjustments including prorations, mortgage payoffs, liens, title charges, recording fees, commissions, and any negotiated credits or repairs. Final settlement figures will be determined by the closing attorney or settlement agent prior to closing.
                             </p>
                         </div>
@@ -455,11 +497,12 @@
         async function saveAsPDF() {
             const element = document.getElementById('snapshot-target');
             const opt = {
-                margin: 10,
+                margin: 5,
                 filename: 'Joe_Pine_Seller_Proceeds_Estimate.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: 'avoid-all' }
             };
             html2pdf().from(element).set(opt).save();
         }
