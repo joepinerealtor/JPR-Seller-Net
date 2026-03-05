@@ -15,6 +15,7 @@
         }
         .input-group:focus-within label { color: #B9212B; }
         
+        /* Type Selection Toggles */
         .type-toggle {
             display: flex;
             background: #f1f5f9;
@@ -54,16 +55,17 @@
             box-shadow: 0 4px 10px 0px rgba(185, 33, 43, 0.2);
         }
 
-        /* Specific styles for PDF and Print exports */
+        /* Specific styles for PDF and Image exports */
         .pdf-export-mode {
-            width: 850px !important; /* Force desktop width for high-quality capture */
+            width: 800px !important;
             background-color: white !important;
+            padding: 0 !important;
         }
 
         @media print {
             @page {
                 size: a4 portrait;
-                margin: 0.3in;
+                margin: 0.2in;
             }
             body {
                 background-color: white !important;
@@ -78,7 +80,8 @@
                 width: 100% !important;
                 max-width: 100% !important;
             }
-            #top-header, #input-column {
+            /* Hide the main app header and input column when printing */
+            #main-app-header, #input-column {
                 display: none !important;
             }
             #output-column {
@@ -98,20 +101,12 @@
                 width: 100% !important;
                 background-color: transparent !important;
             }
-            #resultsCard {
-                background-color: transparent !important;
-                padding: 0 !important;
-                border: none !important;
+            /* Show the report header when printing */
+            #report-header {
+                display: flex !important;
             }
-            h2 { 
-                font-size: 1.25rem !important; 
-                margin-bottom: 0.3rem !important; 
-                border-bottom: 3px solid #B9212B !important; 
-                padding-bottom: 2px !important;
-            }
-            .kw-red-text { color: #B9212B !important; }
             
-            /* FORCE HORIZONTAL FLEX IN PDF/PRINT */
+            /* Print Formatting Fixes */
             .branding-row {
                 display: flex !important;
                 flex-direction: row !important;
@@ -123,41 +118,22 @@
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
-                gap: 1.5rem !important;
-                text-align: left !important;
-            }
-            .logo-stack {
-                border-left: 2px solid #f1f5f9 !important;
-                padding-left: 1.5rem !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                gap: 0.5rem !important;
-            }
-            .contact-block p {
-                margin: 0 !important;
-                line-height: 1.4 !important;
+                gap: 1rem !important;
             }
             
-            /* Tighten spacing to ensure 1-page fit */
+            /* Tighten spacing for fit */
             .space-y-8 { margin-top: 0.2rem !important; margin-bottom: 0.2rem !important; }
             .space-y-5 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
-            .space-y-4 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
             .pt-6 { padding-top: 0.3rem !important; }
             .mt-6 { margin-top: 0.3rem !important; }
             .pb-3 { padding-bottom: 0.1rem !important; }
-            .mb-6 { margin-bottom: 0.15rem !important; }
-            .branding-footer {
-                padding-top: 0.4rem !important;
-                margin-top: 0.4rem !important;
-            }
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div id="workbook-container" class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-        <!-- Header Section -->
-        <div id="top-header" class="bg-[#B9212B] text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <!-- Main App Header (Hidden on Print/PDF) -->
+        <div id="main-app-header" class="bg-[#B9212B] text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hide-on-print">
             <div>
                 <h1 class="text-2xl font-black tracking-tight uppercase leading-tight">Seller Proceeds Workbook</h1>
                 <p class="text-white/80 mt-1 text-sm italic">A professional breakdown of your home sale proceeds.</p>
@@ -165,7 +141,7 @@
             <div class="text-right">
                 <p class="font-black text-xl leading-none">Joe Pine</p>
                 <p class="text-[11px] text-white/90 uppercase tracking-widest font-bold mt-1">REALTOR® RI & MA</p>
-                <p class="text-[10px] text-white/70 font-medium leading-tight text-nowrap">Keller Williams Leading Edge | Platinum Real Estate Group</p>
+                <p class="text-[10px] text-white/70 font-medium leading-tight">Keller Williams Leading Edge | Platinum Real Estate Group</p>
             </div>
         </div>
 
@@ -193,7 +169,7 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Seller Credits</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -268,104 +244,122 @@
                 </div>
             </div>
 
-            <!-- Right Column: Results (The Snapshot Target) -->
-            <div id="output-column" class="lg:col-span-7 space-y-8 print:space-y-2">
-                <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-6 md:p-10 space-y-8 print:space-y-2 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
-                    <div id="resultsCard">
-                        <h2 class="text-xl font-black text-slate-900 mb-6 print:mb-2 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
-                        
-                        <div class="space-y-5 print:space-y-1.5">
-                            <div class="flex justify-between items-center text-xl print:text-lg pb-3 border-b-2 border-slate-200">
-                                <span class="text-slate-600 font-bold">Sales Price</span>
-                                <span class="font-black text-slate-900" id="dispSalesPrice">$0.00</span>
-                            </div>
-
-                            <div class="space-y-4 pt-1 print:space-y-1">
-                                <div class="flex justify-between items-center text-base print:text-sm">
-                                    <span class="text-slate-600 font-semibold">Seller Credits</span>
-                                    <span class="text-[#B9212B] font-black" id="dispSellerCredits">$0.00</span>
-                                </div>
-                                
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <span class="text-slate-600 font-semibold text-base print:text-sm">Listing Broker Commission</span>
-                                        <p class="text-[11px] print:text-[9px] text-slate-400 italic font-medium" id="dispListingBasis">Based on Gross Sales Price</p>
-                                    </div>
-                                    <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispListingComm">$0.00</span>
-                                </div>
-
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <span class="text-slate-600 font-semibold text-base print:text-sm">Buyer Broker Commission</span>
-                                        <p class="text-[11px] print:text-[9px] text-slate-400 italic font-medium" id="dispBuyerBasis">Based on Gross Sales Price</p>
-                                    </div>
-                                    <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispBuyerComm">$0.00</span>
-                                </div>
-
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <span id="resTaxLabel" class="text-slate-600 font-semibold text-base print:text-sm">RI Transfer Tax</span>
-                                        <p id="resTaxHelp" class="text-[10px] print:text-[9px] text-slate-400 italic text-right uppercase tracking-wider font-medium">Calculated at $3.75 per $500 sales price</p>
-                                    </div>
-                                    <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispTransferTax">$0.00</span>
-                                </div>
-                                <div class="flex justify-between items-center text-base print:text-sm">
-                                    <span class="text-slate-600 font-semibold">Mortgage Payoff</span>
-                                    <span class="text-[#B9212B] font-black" id="dispMortgage">$0.00</span>
-                                </div>
-                                <div class="flex justify-between items-center text-base print:text-sm">
-                                    <span class="text-slate-600 font-semibold">Additional Payoff</span>
-                                    <span class="text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
-                                </div>
-                                <div class="flex justify-between items-center text-base print:text-sm">
-                                    <span class="text-slate-600 font-semibold">Closing Cost</span>
-                                    <span class="text-[#B9212B] font-black" id="dispMisc">$0.00</span>
-                                </div>
-                            </div>
-
-                            <div class="mt-6 pt-6 print:mt-2 print:pt-2 border-t-4 border-[#B9212B]">
-                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-                                    <span id="netLabel" class="text-xl font-black text-slate-900 uppercase tracking-tighter leading-tight">Estimated Net to Seller</span>
-                                    <span class="text-4xl font-black text-green-700 print:text-3xl transition-colors" id="dispTotalNet">$0.00</span>
-                                </div>
-                            </div>
+            <!-- Right Column: Results Area -->
+            <div id="output-column" class="lg:col-span-7 space-y-8">
+                <!-- The snapshot target now contains its own header -->
+                <div id="snapshot-target" class="bg-white rounded-3xl overflow-hidden border-2 border-slate-100 shadow-sm">
+                    
+                    <!-- Report Header (Visible only in Print/PDF/Image) -->
+                    <div id="report-header" class="bg-[#B9212B] text-white p-6 flex flex-row justify-between items-center w-full" style="display: none;">
+                        <div class="text-left">
+                            <h1 class="text-xl font-black uppercase leading-tight">Seller Proceeds Workbook</h1>
+                            <p class="text-white/80 text-[10px] italic">A professional breakdown of your home sale proceeds.</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-black text-base leading-none">Joe Pine</p>
+                            <p class="text-[9px] text-white/90 uppercase tracking-widest font-bold mt-1">REALTOR® RI & MA</p>
+                            <p class="text-[8px] text-white/70 font-medium">Keller Williams Leading Edge | Platinum Real Estate Group</p>
                         </div>
                     </div>
 
-                    <!-- Branding Footer (FORCED HORIZONTAL) -->
-                    <div class="pt-6 border-t border-slate-200 branding-footer">
-                        <div class="flex flex-row gap-8 items-center justify-between mb-6 branding-row">
-                            <div class="flex flex-row items-center gap-6 contact-side-wrapper">
-                                <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
-                                    <img 
-                                        src="Joe (1).JPG" 
-                                        alt="Joe Pine" 
-                                        onerror="this.src='https://ui-avatars.com/api/?name=Joe+Pine&background=B9212B&color=fff&size=200'"
-                                        class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
-                                    >
+                    <!-- Results Content -->
+                    <div class="p-6 md:p-8 space-y-8 print:space-y-2">
+                        <div id="resultsCard">
+                            <h2 class="text-xl font-black text-slate-900 mb-6 print:mb-2 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
+                            
+                            <div class="space-y-5 print:space-y-1.5">
+                                <div class="flex justify-between items-center text-xl print:text-lg pb-3 border-b-2 border-slate-200">
+                                    <span class="text-slate-600 font-bold">Sales Price</span>
+                                    <span class="font-black text-slate-900" id="dispSalesPrice">$0.00</span>
                                 </div>
-                                <div class="text-left space-y-0.5 contact-block">
-                                    <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-lg kw-red-text leading-tight">Joe Pine</p>
-                                    <p class="text-slate-700 font-black text-sm print:text-xs uppercase tracking-widest leading-tight">REALTOR® RI & MA</p>
-                                    <div class="text-slate-600 text-xs print:text-[10px] space-y-0.5 font-semibold leading-normal">
-                                        <p>401.327.0888</p>
-                                        <p>JoePine@KW.com</p>
-                                        <p>28 Thurber Blvd, Smithfield, RI 02917</p>
-                                        <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline">www.JoePine.com</p>
+
+                                <div class="space-y-4 pt-1 print:space-y-1">
+                                    <div class="flex justify-between items-center text-base print:text-sm">
+                                        <span class="text-slate-600 font-semibold">Seller Credits</span>
+                                        <span class="text-[#B9212B] font-black" id="dispSellerCredits">$0.00</span>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <span class="text-slate-600 font-semibold text-base print:text-sm">Listing Broker Commission</span>
+                                            <p class="text-[11px] print:text-[9px] text-slate-400 italic font-medium" id="dispListingBasis">Based on Gross Sales Price</p>
+                                        </div>
+                                        <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispListingComm">$0.00</span>
+                                    </div>
+
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <span class="text-slate-600 font-semibold text-base print:text-sm">Buyer Broker Commission</span>
+                                            <p class="text-[11px] print:text-[9px] text-slate-400 italic font-medium" id="dispBuyerBasis">Based on Gross Sales Price</p>
+                                        </div>
+                                        <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispBuyerComm">$0.00</span>
+                                    </div>
+
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <span id="resTaxLabel" class="text-slate-600 font-semibold text-base print:text-sm">RI Transfer Tax</span>
+                                            <p id="resTaxHelp" class="text-[10px] print:text-[9px] text-slate-400 italic text-right uppercase tracking-wider font-medium">Calculated at $3.75 per $500 sales price</p>
+                                        </div>
+                                        <span class="text-[#B9212B] font-black text-base print:text-sm" id="dispTransferTax">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-base print:text-sm">
+                                        <span class="text-slate-600 font-semibold">Mortgage Payoff</span>
+                                        <span class="text-[#B9212B] font-black" id="dispMortgage">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-base print:text-sm">
+                                        <span class="text-slate-600 font-semibold">Additional Payoff</span>
+                                        <span class="text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-base print:text-sm">
+                                        <span class="text-slate-600 font-semibold">Closing Cost</span>
+                                        <span class="text-[#B9212B] font-black" id="dispMisc">$0.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 pt-6 print:mt-2 print:pt-2 border-t-4 border-[#B9212B]">
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                                        <span id="netLabel" class="text-xl font-black text-slate-900 uppercase tracking-tighter leading-tight">Estimated Net to Seller</span>
+                                        <span class="text-4xl font-black text-green-700 print:text-3xl transition-colors" id="dispTotalNet">$0.00</span>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-4 print:gap-2 logo-stack">
-                                <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
-                                <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
-                            </div>
                         </div>
 
-                        <div class="mt-4 p-4 bg-slate-100/50 rounded-2xl border border-slate-200 print:p-2 print:mt-1 print:bg-transparent print:border-none">
-                            <p id="legal-disclaimer" class="text-[11px] md:text-[12px] print:text-[10px] text-slate-500 leading-tight italic text-center md:text-left font-semibold">
-                                This estimate is provided for informational purposes only and does not represent a guarantee of final proceeds. Rhode Island transfer tax is calculated at $3.75 per $500 of the sales price and Massachusetts transfer tax is calculated at $2.28 per $500 of the sales price. Estimated proceeds may change due to final settlement adjustments including prorations, mortgage payoffs, liens, title charges, recording fees, commissions, and any negotiated credits or repairs. Final settlement figures will be determined by the closing attorney or settlement agent prior to closing.
-                            </p>
+                        <!-- Branding Footer -->
+                        <div class="pt-6 border-t border-slate-200 branding-footer">
+                            <div class="flex flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
+                                <div class="flex flex-row items-center gap-6 contact-side-wrapper">
+                                    <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
+                                        <img 
+                                            src="Joe (1).JPG" 
+                                            alt="Joe Pine" 
+                                            onerror="this.src='https://ui-avatars.com/api/?name=Joe+Pine&background=B9212B&color=fff&size=200'"
+                                            class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
+                                        >
+                                    </div>
+                                    <div class="text-left space-y-0.5 contact-block">
+                                        <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-lg kw-red-text leading-tight">Joe Pine</p>
+                                        <p class="text-slate-700 font-black text-sm print:text-xs uppercase tracking-widest leading-tight">REALTOR® RI & MA</p>
+                                        <div class="text-slate-600 text-xs print:text-[10px] space-y-1 font-semibold leading-normal">
+                                            <p>401.327.0888</p>
+                                            <p>JoePine@KW.com</p>
+                                            <p>28 Thurber Blvd, Smithfield, RI 02917</p>
+                                            <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline">www.JoePine.com</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-4 print:gap-2 logo-stack">
+                                    <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
+                                    <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-4 bg-slate-100/50 rounded-2xl border border-slate-200 print:p-2 print:mt-1 print:bg-transparent print:border-none">
+                                <p id="legal-disclaimer" class="text-[11px] md:text-[12px] print:text-[10px] text-slate-500 leading-tight italic text-center md:text-left font-semibold">
+                                    This estimate is provided for informational purposes only and does not represent a guarantee of final proceeds. Rhode Island transfer tax is calculated at $3.75 per $500 of the sales price and Massachusetts transfer tax is calculated at $2.28 per $500 of the sales price. Estimated proceeds may change due to final settlement adjustments including prorations, mortgage payoffs, liens, title charges, recording fees, commissions, and any negotiated credits or repairs. Final settlement figures will be determined by the closing attorney or settlement agent prior to closing.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -415,6 +409,7 @@
                 document.getElementById('buyerTypeFlat').classList.toggle('active', type === 'flat');
                 document.getElementById('buyerSymbol').classList.toggle('hidden', type !== 'flat');
                 document.getElementById('buyerCommValue').style.paddingLeft = type === 'flat' ? '28px' : '0';
+                
                 document.getElementById('buyerBasisContainer').style.display = type === 'flat' ? 'none' : 'flex';
             }
             calculate();
@@ -510,9 +505,10 @@
 
         async function saveAsPDF() {
             const element = document.getElementById('snapshot-target');
+            const header = document.getElementById('report-header');
             
-            // Temporary forcing desktop layout for the capture
             element.classList.add('pdf-export-mode');
+            header.style.display = 'flex';
             
             const opt = {
                 margin: 5,
@@ -522,7 +518,7 @@
                     scale: 3, 
                     useCORS: true, 
                     logging: false,
-                    width: 850 // Fix the capture width to prevent wrapping
+                    width: 800
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
@@ -531,14 +527,16 @@
                 await html2pdf().from(element).set(opt).save();
             } finally {
                 element.classList.remove('pdf-export-mode');
+                header.style.display = 'none';
             }
         }
 
         async function saveSnapshot() {
             const target = document.getElementById('snapshot-target');
+            const header = document.getElementById('report-header');
             
-            // Temporary forcing desktop layout
             target.classList.add('pdf-export-mode');
+            header.style.display = 'flex';
             
             try {
                 const canvas = await html2canvas(target, { 
@@ -546,7 +544,7 @@
                     scale: 3, 
                     backgroundColor: "#ffffff",
                     logging: false,
-                    width: 850
+                    width: 800
                 });
                 const image = canvas.toDataURL("image/png");
                 const link = document.createElement('a');
@@ -555,6 +553,7 @@
                 link.click();
             } finally {
                 target.classList.remove('pdf-export-mode');
+                header.style.display = 'none';
             }
         }
 
