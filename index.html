@@ -15,7 +15,7 @@
         }
         .input-group:focus-within label { color: #B9212B; }
         
-        /* Type Selection Toggles (% vs $ and Gross vs Net) */
+        /* Type Selection Toggles */
         .type-toggle {
             display: flex;
             background: #f1f5f9;
@@ -55,11 +55,14 @@
             box-shadow: 0 4px 10px 0px rgba(185, 33, 43, 0.2);
         }
 
-        /* Specific styles for PDF and Image exports */
-        .pdf-export-mode {
+        /* Forced desktop layout for exports */
+        .export-mode {
             width: 800px !important;
+            min-width: 800px !important;
+            max-width: 800px !important;
             background-color: white !important;
             padding: 0 !important;
+            margin: 0 !important;
         }
 
         @media print {
@@ -67,44 +70,15 @@
                 size: a4 portrait;
                 margin: 0.3in;
             }
-            body {
-                background-color: white !important;
-                padding: 0 !important;
-            }
-            .hide-on-print {
-                display: none !important;
-            }
-            #workbook-container {
-                box-shadow: none !important;
-                border: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-            #main-app-header, #input-column {
-                display: none !important;
-            }
-            #output-column {
-                width: 100% !important;
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .main-grid {
-                display: block !important;
-                padding: 0 !important;
-            }
-            #snapshot-target {
-                padding: 0 !important;
-                border: none !important;
-                box-shadow: none !important;
-                width: 100% !important;
-                background-color: transparent !important;
-            }
-            #report-header {
-                display: flex !important;
-            }
+            body { background-color: white !important; padding: 0 !important; }
+            .hide-on-print { display: none !important; }
+            #workbook-container { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
+            #main-app-header, #input-column { display: none !important; }
+            #output-column { width: 100% !important; display: block !important; margin: 0 !important; padding: 0 !important; }
+            .main-grid { display: block !important; padding: 0 !important; }
+            #snapshot-target { padding: 0 !important; border: none !important; box-shadow: none !important; width: 100% !important; background-color: transparent !important; }
+            #report-header { display: flex !important; }
             
-            /* FORCE HORIZONTAL FLEX IN PDF/PRINT */
             .branding-row {
                 display: flex !important;
                 flex-direction: row !important;
@@ -117,38 +91,28 @@
                 flex-direction: row !important;
                 align-items: center !important;
                 gap: 1.5rem !important;
-                text-align: left !important;
             }
             .logo-stack {
                 border-left: 2px solid #f1f5f9 !important;
-                border-top: none !important;
                 padding-left: 1.5rem !important;
-                padding-top: 0 !important;
-                margin-top: 0 !important;
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
-                gap: 0.5rem !important;
+                gap: 0.4rem !important;
             }
             
-            /* Tight spacing for fit */
+            /* Ultra-tight spacing for fit */
             .space-y-8 { margin-top: 0.2rem !important; margin-bottom: 0.2rem !important; }
             .space-y-5 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
-            .space-y-4 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
             .pt-6 { padding-top: 0.3rem !important; }
             .mt-6 { margin-top: 0.3rem !important; }
-            .pb-3 { padding-bottom: 0.1rem !important; }
-            .mb-6 { margin-bottom: 0.15rem !important; }
-            .branding-footer {
-                padding-top: 0.3rem !important;
-                margin-top: 0.4rem !important;
-            }
+            .mb-6 { margin-bottom: 0.2rem !important; }
         }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div id="workbook-container" class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
-        <!-- Main App Header (Hidden on Print/PDF) -->
+        <!-- Main App Header -->
         <div id="main-app-header" class="bg-[#B9212B] text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hide-on-print">
             <div>
                 <h1 class="text-2xl font-black tracking-tight uppercase leading-tight">Seller Proceeds Workbook</h1>
@@ -185,10 +149,11 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Seller Credits</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
+                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                         </div>
                     </div>
 
+                    <!-- Commissions -->
                     <div class="input-group">
                         <div class="flex items-center justify-between mb-1">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Listing Broker Commission</label>
@@ -223,6 +188,7 @@
                         </div>
                     </div>
 
+                    <!-- Tax and Payoffs -->
                     <div class="input-group">
                         <label id="taxLabel" class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">RI Transfer Tax (Fixed Cost)</label>
                         <div class="relative flex items-center">
@@ -244,7 +210,7 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Additional Payoff (Est.)</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -258,11 +224,11 @@
                 </div>
             </div>
 
-            <!-- Right Column: Results Area -->
+            <!-- Right Column: Results -->
             <div id="output-column" class="lg:col-span-7 space-y-8">
                 <div id="snapshot-target" class="bg-white rounded-3xl overflow-hidden border-2 border-slate-100 shadow-sm">
                     
-                    <!-- Report Header (Visible only in Print/PDF/Image) -->
+                    <!-- Report Header -->
                     <div id="report-header" class="bg-[#B9212B] text-white p-6 flex flex-row justify-between items-center w-full" style="display: none;">
                         <div class="text-left">
                             <h1 class="text-xl font-black uppercase leading-tight">Seller Proceeds Workbook</h1>
@@ -276,11 +242,11 @@
                     </div>
 
                     <!-- Results Content -->
-                    <div class="p-6 md:p-8 space-y-8 print:space-y-2">
+                    <div class="p-6 md:p-8 space-y-8 print:p-4 print:space-y-2">
                         <div id="resultsCard">
                             <h2 class="text-xl font-black text-slate-900 mb-6 print:mb-2 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
                             
-                            <div class="space-y-5 print:space-y-1.5">
+                            <div class="space-y-5 print:space-y-1">
                                 <div class="flex justify-between items-center text-xl print:text-lg pb-3 border-b-2 border-slate-200">
                                     <span class="text-slate-600 font-bold">Sales Price</span>
                                     <span class="font-black text-slate-900" id="dispSalesPrice">$0.00</span>
@@ -338,10 +304,9 @@
                             </div>
                         </div>
 
-                        <!-- Branding Footer (Responsive Site vs Forced Print) -->
+                        <!-- Footer -->
                         <div class="pt-6 border-t border-slate-200 branding-footer">
-                            <!-- Responsive wrapper: Stacks on mobile site, stays horizontal in print -->
-                            <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
+                            <div id="branding-row-target" class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
                                 <div class="flex flex-col sm:flex-row items-center gap-6 contact-side-wrapper">
                                     <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
                                         <img 
@@ -358,13 +323,12 @@
                                             <p>401.327.0888</p>
                                             <p>JoePine@KW.com</p>
                                             <p>28 Thurber Blvd, Smithfield, RI 02917</p>
-                                            <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline text-nowrap">www.JoePine.com</p>
+                                            <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline">www.JoePine.com</p>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <!-- Logo stack: Stacks on mobile site, stacks in print (but aligns next to contact) -->
-                                <div class="flex flex-col items-center justify-center gap-4 md:border-l-2 md:border-slate-100 md:pl-8 border-t-2 md:border-t-0 pt-6 md:pt-0 mt-6 md:mt-0 print:pl-4 print:gap-2 logo-stack">
+                                <div id="logo-stack-target" class="flex flex-col items-center justify-center gap-4 md:border-l-2 md:border-slate-100 md:pl-8 border-t-2 md:border-t-0 pt-6 md:pt-0 mt-6 md:mt-0 print:pl-4 logo-stack">
                                     <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
                                     <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
                                 </div>
@@ -424,7 +388,6 @@
                 document.getElementById('buyerTypeFlat').classList.toggle('active', type === 'flat');
                 document.getElementById('buyerSymbol').classList.toggle('hidden', type !== 'flat');
                 document.getElementById('buyerCommValue').style.paddingLeft = type === 'flat' ? '28px' : '0';
-                
                 document.getElementById('buyerBasisContainer').style.display = type === 'flat' ? 'none' : 'flex';
             }
             calculate();
@@ -466,7 +429,6 @@
             }
             document.getElementById('transferTax').value = autoTransferTax.toFixed(2);
 
-            // Calculate Listing Commission
             let listingCommTotal = 0;
             if (listingCommType === 'percent') {
                 listingCommTotal = salesPrice * (listingValue / 100);
@@ -476,7 +438,6 @@
                 document.getElementById('dispListingBasis').innerText = `Flat Fee`;
             }
 
-            // Calculate Buyer Commission
             let buyerCommTotal = 0;
             if (buyerCommType === 'percent') {
                 let netForBuyerComm;
@@ -523,10 +484,15 @@
         async function saveAsPDF() {
             const element = document.getElementById('snapshot-target');
             const header = document.getElementById('report-header');
+            const brandingRow = document.getElementById('branding-row-target');
+            const logoStack = document.getElementById('logo-stack-target');
             
-            element.classList.add('pdf-export-mode');
+            // Fix: Force desktop width and layout to prevent PDF tools from capturing scrolled/mobile view
+            element.classList.add('export-mode');
             header.style.display = 'flex';
-            
+            brandingRow.classList.add('branding-row'); // Force print-style flex
+            logoStack.classList.add('logo-stack'); // Force print-style border/alignment
+
             const opt = {
                 margin: 5,
                 filename: 'Joe_Pine_Seller_Proceeds_Estimate.pdf',
@@ -535,15 +501,20 @@
                     scale: 3, 
                     useCORS: true, 
                     logging: false,
-                    width: 800
+                    scrollY: 0, // Fix: Ensure it starts at the top
+                    scrollX: 0,
+                    windowWidth: 800 // Fix: Force layout width
                 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             try {
+                await new Promise(resolve => setTimeout(resolve, 50)); // Tiny delay for styles
                 await html2pdf().from(element).set(opt).save();
             } finally {
-                element.classList.remove('pdf-export-mode');
+                element.classList.remove('export-mode');
+                brandingRow.classList.remove('branding-row');
+                logoStack.classList.remove('logo-stack');
                 header.style.display = 'none';
             }
         }
@@ -551,9 +522,13 @@
         async function saveSnapshot() {
             const target = document.getElementById('snapshot-target');
             const header = document.getElementById('report-header');
+            const brandingRow = document.getElementById('branding-row-target');
+            const logoStack = document.getElementById('logo-stack-target');
             
-            target.classList.add('pdf-export-mode');
+            target.classList.add('export-mode');
             header.style.display = 'flex';
+            brandingRow.classList.add('branding-row');
+            logoStack.classList.add('logo-stack');
             
             try {
                 const canvas = await html2canvas(target, { 
@@ -561,7 +536,9 @@
                     scale: 3, 
                     backgroundColor: "#ffffff",
                     logging: false,
-                    width: 800
+                    scrollY: 0,
+                    scrollX: 0,
+                    windowWidth: 800
                 });
                 const image = canvas.toDataURL("image/png");
                 const link = document.createElement('a');
@@ -569,7 +546,9 @@
                 link.href = image;
                 link.click();
             } finally {
-                target.classList.remove('pdf-export-mode');
+                target.classList.remove('export-mode');
+                brandingRow.classList.remove('branding-row');
+                logoStack.classList.remove('logo-stack');
                 header.style.display = 'none';
             }
         }
