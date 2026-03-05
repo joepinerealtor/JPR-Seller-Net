@@ -15,7 +15,7 @@
         }
         .input-group:focus-within label { color: #B9212B; }
         
-        /* Type Selection Toggles */
+        /* Type Selection Toggles (% vs $ and Gross vs Net) */
         .type-toggle {
             display: flex;
             background: #f1f5f9;
@@ -65,7 +65,7 @@
         @media print {
             @page {
                 size: a4 portrait;
-                margin: 0.2in;
+                margin: 0.3in;
             }
             body {
                 background-color: white !important;
@@ -80,7 +80,6 @@
                 width: 100% !important;
                 max-width: 100% !important;
             }
-            /* Hide the main app header and input column when printing */
             #main-app-header, #input-column {
                 display: none !important;
             }
@@ -101,12 +100,11 @@
                 width: 100% !important;
                 background-color: transparent !important;
             }
-            /* Show the report header when printing */
             #report-header {
                 display: flex !important;
             }
             
-            /* Print Formatting Fixes */
+            /* FORCE HORIZONTAL FLEX IN PDF/PRINT */
             .branding-row {
                 display: flex !important;
                 flex-direction: row !important;
@@ -118,15 +116,33 @@
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
-                gap: 1rem !important;
+                gap: 1.5rem !important;
+                text-align: left !important;
+            }
+            .logo-stack {
+                border-left: 2px solid #f1f5f9 !important;
+                border-top: none !important;
+                padding-left: 1.5rem !important;
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.5rem !important;
             }
             
-            /* Tighten spacing for fit */
+            /* Tight spacing for fit */
             .space-y-8 { margin-top: 0.2rem !important; margin-bottom: 0.2rem !important; }
             .space-y-5 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
+            .space-y-4 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
             .pt-6 { padding-top: 0.3rem !important; }
             .mt-6 { margin-top: 0.3rem !important; }
             .pb-3 { padding-bottom: 0.1rem !important; }
+            .mb-6 { margin-bottom: 0.15rem !important; }
+            .branding-footer {
+                padding-top: 0.3rem !important;
+                margin-top: 0.4rem !important;
+            }
         }
     </style>
 </head>
@@ -141,7 +157,7 @@
             <div class="text-right">
                 <p class="font-black text-xl leading-none">Joe Pine</p>
                 <p class="text-[11px] text-white/90 uppercase tracking-widest font-bold mt-1">REALTOR® RI & MA</p>
-                <p class="text-[10px] text-white/70 font-medium leading-tight">Keller Williams Leading Edge | Platinum Real Estate Group</p>
+                <p class="text-[10px] text-white/70 font-medium leading-tight text-nowrap">Keller Williams Leading Edge | Platinum Real Estate Group</p>
             </div>
         </div>
 
@@ -173,7 +189,6 @@
                         </div>
                     </div>
 
-                    <!-- Listing Broker Commission -->
                     <div class="input-group">
                         <div class="flex items-center justify-between mb-1">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Listing Broker Commission</label>
@@ -188,7 +203,6 @@
                         </div>
                     </div>
 
-                    <!-- Buyer Broker Commission -->
                     <div class="input-group">
                         <div class="flex items-center justify-between mb-1">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Buyer Broker Commission</label>
@@ -230,7 +244,7 @@
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Additional Payoff (Est.)</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
+                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -246,7 +260,6 @@
 
             <!-- Right Column: Results Area -->
             <div id="output-column" class="lg:col-span-7 space-y-8">
-                <!-- The snapshot target now contains its own header -->
                 <div id="snapshot-target" class="bg-white rounded-3xl overflow-hidden border-2 border-slate-100 shadow-sm">
                     
                     <!-- Report Header (Visible only in Print/PDF/Image) -->
@@ -325,10 +338,11 @@
                             </div>
                         </div>
 
-                        <!-- Branding Footer -->
+                        <!-- Branding Footer (Responsive Site vs Forced Print) -->
                         <div class="pt-6 border-t border-slate-200 branding-footer">
-                            <div class="flex flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
-                                <div class="flex flex-row items-center gap-6 contact-side-wrapper">
+                            <!-- Responsive wrapper: Stacks on mobile site, stays horizontal in print -->
+                            <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
+                                <div class="flex flex-col sm:flex-row items-center gap-6 contact-side-wrapper">
                                     <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
                                         <img 
                                             src="Joe (1).JPG" 
@@ -337,19 +351,20 @@
                                             class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
                                         >
                                     </div>
-                                    <div class="text-left space-y-0.5 contact-block">
+                                    <div class="text-center md:text-left space-y-0.5 contact-block">
                                         <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-lg kw-red-text leading-tight">Joe Pine</p>
                                         <p class="text-slate-700 font-black text-sm print:text-xs uppercase tracking-widest leading-tight">REALTOR® RI & MA</p>
                                         <div class="text-slate-600 text-xs print:text-[10px] space-y-1 font-semibold leading-normal">
                                             <p>401.327.0888</p>
                                             <p>JoePine@KW.com</p>
                                             <p>28 Thurber Blvd, Smithfield, RI 02917</p>
-                                            <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline">www.JoePine.com</p>
+                                            <p class="text-[#B9212B] font-black text-sm print:text-[10px] mt-0.5 underline text-nowrap">www.JoePine.com</p>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-4 print:gap-2 logo-stack">
+                                <!-- Logo stack: Stacks on mobile site, stacks in print (but aligns next to contact) -->
+                                <div class="flex flex-col items-center justify-center gap-4 md:border-l-2 md:border-slate-100 md:pl-8 border-t-2 md:border-t-0 pt-6 md:pt-0 mt-6 md:mt-0 print:pl-4 print:gap-2 logo-stack">
                                     <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
                                     <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
                                 </div>
@@ -451,6 +466,7 @@
             }
             document.getElementById('transferTax').value = autoTransferTax.toFixed(2);
 
+            // Calculate Listing Commission
             let listingCommTotal = 0;
             if (listingCommType === 'percent') {
                 listingCommTotal = salesPrice * (listingValue / 100);
@@ -460,6 +476,7 @@
                 document.getElementById('dispListingBasis').innerText = `Flat Fee`;
             }
 
+            // Calculate Buyer Commission
             let buyerCommTotal = 0;
             if (buyerCommType === 'percent') {
                 let netForBuyerComm;
