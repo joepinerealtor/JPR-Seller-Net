@@ -15,38 +15,31 @@
         }
         .input-group:focus-within label { color: #B9212B; }
         
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 48px;
-            height: 24px;
+        /* Type Selection Toggles (% vs $ and Gross vs Net) */
+        .type-toggle {
+            display: flex;
+            background: #f1f5f9;
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #cbd5e1;
-            transition: .4s;
-            border-radius: 24px;
+        .type-btn {
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 900;
+            border-radius: 6px;
+            transition: all 0.2s;
+            color: #64748b;
         }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
+        .type-btn.active {
+            background: white;
+            color: #B9212B;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        input:checked + .slider { background-color: #B9212B; }
-        input:checked + .slider:before { transform: translateX(24px); }
 
         .state-btn {
-            padding: 10px 20px;
-            font-size: 13px;
+            padding: 8px 16px;
+            font-size: 12px;
             font-weight: 800;
             transition: all 0.2s;
             border-radius: 8px;
@@ -59,7 +52,7 @@
             background-color: #B9212B;
             border-color: #B9212B;
             color: white;
-            box-shadow: 0 4px 10px 0px rgba(185, 33, 43, 0.3);
+            box-shadow: 0 4px 10px 0px rgba(185, 33, 43, 0.2);
         }
 
         @media print {
@@ -88,248 +81,242 @@
                 padding: 0 !important;
                 border: none !important;
                 box-shadow: none !important;
+                width: 100% !important;
             }
             #resultsCard {
                 background-color: transparent !important;
                 padding: 0 !important;
                 border: none !important;
             }
-            h2 { font-size: 1.5rem !important; margin-bottom: 1.5rem !important; border-bottom: 3px solid #B9212B !important; }
+            h2 { font-size: 1.4rem !important; margin-bottom: 1rem !important; border-bottom: 3px solid #B9212B !important; }
             .kw-red-text { color: #B9212B !important; }
         }
     </style>
 </head>
-<body class="p-4 md:p-10">
-    <!-- Increased max-width for a larger feel -->
+<body class="p-4 md:p-8">
     <div id="workbook-container" class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100">
         <!-- Header Section -->
-        <div id="top-header" class="bg-[#B9212B] text-white p-8 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div id="top-header" class="bg-[#B9212B] text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight uppercase">Seller Proceeds Workbook</h1>
-                <p class="text-white/80 mt-2 text-base italic">A detailed breakdown of what you can expect to walk away with.</p>
+                <h1 class="text-2xl font-black tracking-tight uppercase leading-tight">Seller Proceeds Workbook</h1>
+                <p class="text-white/80 mt-1 text-sm italic">A professional breakdown of your home sale proceeds.</p>
             </div>
             <div class="text-right">
-                <p class="font-black text-2xl">Joe Pine</p>
-                <p class="text-sm text-white/90 uppercase tracking-widest font-bold">REALTOR® RI & MA</p>
-                <p class="text-xs text-white/70 font-medium">Keller Williams Leading Edge | Platinum Real Estate Group</p>
+                <p class="font-black text-xl leading-none">Joe Pine</p>
+                <p class="text-[11px] text-white/90 uppercase tracking-widest font-bold mt-1">REALTOR® RI & MA</p>
+                <p class="text-[10px] text-white/70 font-medium leading-tight text-nowrap">Keller Williams Leading Edge | Platinum Real Estate Group</p>
             </div>
         </div>
 
-        <div class="p-8 md:p-12 main-grid grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <!-- Left Column: Inputs (Larger Spans) -->
-            <div id="input-column" class="lg:col-span-5 space-y-8">
-                <div class="flex flex-col sm:items-start justify-between border-b-2 border-[#B9212B] pb-4 gap-4">
-                    <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Sale Details</h2>
-                    <div class="flex gap-3 w-full">
+        <div class="p-6 md:p-10 main-grid grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <!-- Left Column: Inputs -->
+            <div id="input-column" class="lg:col-span-5 space-y-6">
+                <div class="flex flex-col sm:items-start justify-between border-b-2 border-[#B9212B] pb-3 gap-3">
+                    <h2 class="text-lg font-black text-slate-800 uppercase tracking-tighter">Sale Details</h2>
+                    <div class="flex gap-2 w-full">
                         <button id="btnRI" onclick="setState('RI')" class="state-btn active flex-1">Rhode Island</button>
                         <button id="btnMA" onclick="setState('MA')" class="state-btn flex-1">Massachusetts</button>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 gap-6">
+                <div class="grid grid-cols-1 gap-5">
                     <div class="input-group">
-                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Sales Price</label>
-                        <div class="relative flex items-center">
-                            <span class="absolute left-0 text-[#B9212B] font-bold text-xl">$</span>
-                            <input type="number" id="salesPrice" value="" placeholder="0" class="w-full pl-8 py-3 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-xl">
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Seller Credits</label>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Sales Price</label>
                         <div class="relative flex items-center">
                             <span class="absolute left-0 text-[#B9212B] font-bold text-lg">$</span>
-                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-lg">
+                            <input type="number" id="salesPrice" value="" placeholder="0" class="w-full pl-8 py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-lg">
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Listing Broker Commission (%)</label>
-                        <input type="number" id="listingCommPercent" value="" placeholder="0" step="0.1" class="w-full py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-lg">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Seller Credits</label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
+                            <input type="number" id="sellerCredits" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                        </div>
                     </div>
 
+                    <!-- Listing Broker Commission -->
                     <div class="input-group">
                         <div class="flex items-center justify-between mb-1">
-                            <label class="block text-xs font-black text-slate-500 uppercase tracking-widest">Buyer Broker Commission (%)</label>
-                            <div class="flex items-center gap-3">
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter" id="baseIndicator">Gross</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="commissionBaseToggle" checked>
-                                    <span class="slider"></span>
-                                </label>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Listing Broker Commission</label>
+                            <div class="type-toggle">
+                                <button onclick="setCommType('listing', 'percent')" id="listingTypePercent" class="type-btn active">%</button>
+                                <button onclick="setCommType('listing', 'flat')" id="listingTypeFlat" class="type-btn">$</button>
                             </div>
                         </div>
-                        <input type="number" id="buyerCommPercent" value="" placeholder="0" step="0.1" class="w-full py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-lg">
-                    </div>
-
-                    <div class="input-group">
-                        <label id="taxLabel" class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">RI Transfer Tax (Fixed Cost)</label>
                         <div class="relative flex items-center">
-                            <span class="absolute left-0 text-[#B9212B] font-bold text-lg">$</span>
-                            <input type="number" id="transferTax" class="w-full pl-7 py-2 border-b-2 border-slate-100 outline-none font-bold text-slate-900 text-lg bg-slate-50" readonly>
-                        </div>
-                        <p id="taxHelpText" class="text-[11px] text-slate-400 mt-2 font-medium italic uppercase tracking-wider">Rate: $3.75 per $500 sales price</p>
-                    </div>
-
-                    <div class="input-group">
-                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Mortgage Payoff (Est.)</label>
-                        <div class="relative flex items-center">
-                            <span class="absolute left-0 text-[#B9212B] font-bold text-lg">$</span>
-                            <input type="number" id="mortgagePayoff" value="" placeholder="0" class="w-full pl-8 py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-lg">
+                            <span id="listingSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
+                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                         </div>
                     </div>
 
+                    <!-- Buyer Broker Commission (Updated Inline Toggles) -->
                     <div class="input-group">
-                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Additional Payoff (Est.)</label>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Buyer Broker Commission</label>
+                            <div class="flex gap-2">
+                                <!-- Basis Toggle now inline with Type Toggle -->
+                                <div id="buyerBasisContainer" class="type-toggle">
+                                    <button onclick="setCommBasis('gross')" id="basisGross" class="type-btn active">Gross</button>
+                                    <button onclick="setCommBasis('net')" id="basisNet" class="type-btn">Net</button>
+                                </div>
+                                <div class="type-toggle">
+                                    <button onclick="setCommType('buyer', 'percent')" id="buyerTypePercent" class="type-btn active">%</button>
+                                    <button onclick="setCommType('buyer', 'flat')" id="buyerTypeFlat" class="type-btn">$</button>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative flex items-center">
-                            <span class="absolute left-0 text-[#B9212B] font-bold text-lg">$</span>
-                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-lg">
+                            <span id="buyerSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
+                            <input type="number" id="buyerCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label class="block text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Closing Cost (Est.)</label>
+                        <label id="taxLabel" class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">RI Transfer Tax (Fixed Cost)</label>
                         <div class="relative flex items-center">
-                            <span class="absolute left-0 text-[#B9212B] font-bold text-lg">$</span>
-                            <input type="number" id="miscCosts" value="" placeholder="0" class="w-full pl-8 py-2 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-lg">
+                            <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
+                            <input type="number" id="transferTax" class="w-full pl-7 py-1.5 border-b-2 border-slate-100 outline-none font-bold text-slate-900 text-base bg-slate-50" readonly>
+                        </div>
+                        <p id="taxHelpText" class="text-[10px] text-slate-400 mt-1 font-medium italic uppercase tracking-wider">Rate: $3.75 per $500 sales price</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Mortgage Payoff (Est.)</label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
+                            <input type="number" id="mortgagePayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Additional Payoff (Est.)</label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
+                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Closing Cost (Est.)</label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
+                            <input type="number" id="miscCosts" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Results & Snapshot Area -->
-            <div id="output-column" class="lg:col-span-7 space-y-10">
-                <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-8 md:p-12 space-y-10 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
+            <!-- Right Column: Results -->
+            <div id="output-column" class="lg:col-span-7 space-y-8">
+                <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-6 md:p-10 space-y-8 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
                     <div id="resultsCard">
-                        <h2 class="text-2xl font-black text-slate-900 mb-8 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
+                        <h2 class="text-xl font-black text-slate-900 mb-6 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
                         
-                        <div class="space-y-6 print:space-y-5">
-                            <div class="flex justify-between items-center text-2xl pb-4 border-b-2 border-slate-200">
+                        <div class="space-y-5 print:space-y-4">
+                            <div class="flex justify-between items-center text-xl pb-3 border-b-2 border-slate-200">
                                 <span class="text-slate-600 font-bold">Sales Price</span>
                                 <span class="font-black text-slate-900" id="dispSalesPrice">$0.00</span>
                             </div>
 
-                            <div class="space-y-5 pt-2 print:space-y-4">
-                                <div class="flex justify-between items-center text-lg">
+                            <div class="space-y-4 pt-1 print:space-y-3">
+                                <div class="flex justify-between items-center text-base">
                                     <span class="text-slate-600 font-semibold">Seller Credits</span>
                                     <span class="text-[#B9212B] font-black" id="dispSellerCredits">$0.00</span>
                                 </div>
                                 
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <span class="text-slate-600 font-semibold text-lg">Listing Broker Commission</span>
-                                        <p class="text-[12px] text-slate-400 italic font-medium" id="dispListingBasis">Based on Gross Sales Price</p>
+                                        <span class="text-slate-600 font-semibold text-base">Listing Broker Commission</span>
+                                        <p class="text-[11px] text-slate-400 italic font-medium" id="dispListingBasis">Based on Gross Sales Price</p>
                                     </div>
-                                    <span class="text-[#B9212B] font-black text-lg" id="dispListingComm">$0.00</span>
+                                    <span class="text-[#B9212B] font-black text-base" id="dispListingComm">$0.00</span>
                                 </div>
 
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <span class="text-slate-600 font-semibold text-lg">Buyer Broker Commission</span>
-                                        <p class="text-[12px] text-slate-400 italic font-medium" id="dispBuyerBasis">Based on Gross Sales Price</p>
+                                        <span class="text-slate-600 font-semibold text-base">Buyer Broker Commission</span>
+                                        <p class="text-[11px] text-slate-400 italic font-medium" id="dispBuyerBasis">Based on Gross Sales Price</p>
                                     </div>
-                                    <span class="text-[#B9212B] font-black text-lg" id="dispBuyerComm">$0.00</span>
+                                    <span class="text-[#B9212B] font-black text-base" id="dispBuyerComm">$0.00</span>
                                 </div>
 
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <span id="resTaxLabel" class="text-slate-600 font-semibold text-lg">RI Transfer Tax</span>
-                                        <p id="resTaxHelp" class="text-[11px] text-slate-400 italic text-right uppercase tracking-wider font-medium">Calculated at $3.75 per $500 sales price</p>
+                                        <span id="resTaxLabel" class="text-slate-600 font-semibold text-base">RI Transfer Tax</span>
+                                        <p id="resTaxHelp" class="text-[10px] text-slate-400 italic text-right uppercase tracking-wider font-medium">Calculated at $3.75 per $500 sales price</p>
                                     </div>
-                                    <span class="text-[#B9212B] font-black text-lg" id="dispTransferTax">$0.00</span>
+                                    <span class="text-[#B9212B] font-black text-base" id="dispTransferTax">$0.00</span>
                                 </div>
-                                <div class="flex justify-between items-center text-lg">
+                                <div class="flex justify-between items-center text-base">
                                     <span class="text-slate-600 font-semibold">Mortgage Payoff</span>
                                     <span class="text-[#B9212B] font-black" id="dispMortgage">$0.00</span>
                                 </div>
-                                <div class="flex justify-between items-center text-lg">
+                                <div class="flex justify-between items-center text-base">
                                     <span class="text-slate-600 font-semibold">Additional Payoff</span>
                                     <span class="text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
                                 </div>
-                                <div class="flex justify-between items-center text-lg">
+                                <div class="flex justify-between items-center text-base">
                                     <span class="text-slate-600 font-semibold">Closing Cost</span>
                                     <span class="text-[#B9212B] font-black" id="dispMisc">$0.00</span>
                                 </div>
                             </div>
 
-                            <div class="mt-8 pt-8 border-t-4 border-[#B9212B] print:mt-6 print:pt-4">
+                            <div class="mt-6 pt-6 border-t-4 border-[#B9212B] print:mt-5 print:pt-4">
                                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-                                    <span id="netLabel" class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Estimated Net to Seller</span>
-                                    <span class="text-5xl font-black text-green-700 print:text-4xl transition-colors" id="dispTotalNet">$0.00</span>
+                                    <span id="netLabel" class="text-xl font-black text-slate-900 uppercase tracking-tighter leading-tight">Estimated Net to Seller</span>
+                                    <span class="text-4xl font-black text-green-700 print:text-3xl transition-colors" id="dispTotalNet">$0.00</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Branding Footer (Larger Assets) -->
-                    <div class="pt-8 border-t border-slate-200 branding-footer">
-                        <div class="flex flex-col md:flex-row gap-10 items-center justify-between mb-8">
-                            <div class="flex items-center gap-8">
-                                <div class="relative w-36 h-36 shrink-0 print:w-32 print:h-32">
+                    <!-- Branding Footer -->
+                    <div class="pt-6 border-t border-slate-200 branding-footer">
+                        <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6">
+                            <div class="flex items-center gap-6">
+                                <div class="relative w-28 h-28 shrink-0 print:w-24 print:h-24">
                                     <img 
                                         src="Joe (1).JPG" 
                                         alt="Joe Pine" 
                                         onerror="this.src='https://ui-avatars.com/api/?name=Joe+Pine&background=B9212B&color=fff&size=200'"
-                                        class="w-full h-full object-cover rounded-full border-8 border-white shadow-2xl print:shadow-none print:border-slate-200"
+                                        class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
                                     >
                                 </div>
-                                <div class="text-center md:text-left space-y-1">
-                                    <p class="font-black text-3xl text-slate-900 uppercase tracking-tighter print:text-2xl kw-red-text">Joe Pine</p>
-                                    <p class="text-slate-700 font-black text-base uppercase tracking-widest">REALTOR® RI & MA</p>
-                                    <div class="text-slate-600 text-sm space-y-1 font-semibold">
-                                        <p>401.327.0888 | JoePine@KW.com</p>
+                                <div class="text-center md:text-left space-y-0.5">
+                                    <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-xl kw-red-text">Joe Pine</p>
+                                    <p class="text-slate-700 font-black text-sm uppercase tracking-widest">REALTOR® RI & MA</p>
+                                    <div class="text-slate-600 text-xs space-y-1 font-semibold leading-normal">
+                                        <p>401.327.0888</p>
+                                        <p>JoePine@KW.com</p>
                                         <p>28 Thurber Blvd, Smithfield, RI 02917</p>
-                                        <p class="text-[#B9212B] font-black text-base mt-1 underline">www.JoePine.com</p>
+                                        <p class="text-[#B9212B] font-black text-sm mt-0.5 underline">www.JoePine.com</p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex flex-col items-center justify-center gap-6 border-l-2 border-slate-100 pl-12 print:pl-10">
-                                <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-14 w-auto" onerror="this.style.display='none'">
-                                <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-20 w-auto max-w-[180px]" onerror="this.style.display='none'">
+                            <div class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-6">
+                                <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto" onerror="this.style.display='none'">
+                                <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px]" onerror="this.style.display='none'">
                             </div>
                         </div>
 
-                        <div class="mt-6 p-5 bg-slate-100/50 rounded-2xl border border-slate-200 print:p-0 print:bg-transparent print:border-none">
-                            <p id="legal-disclaimer" class="text-[10px] text-slate-500 leading-relaxed italic text-center md:text-left font-medium">
+                        <div class="mt-4 p-4 bg-slate-100/50 rounded-2xl border border-slate-200 print:p-0 print:bg-transparent print:border-none">
+                            <p id="legal-disclaimer" class="text-[11px] md:text-[12px] text-slate-500 leading-relaxed italic text-center md:text-left font-semibold">
                                 This estimate is provided for informational purposes only and does not represent a guarantee of final proceeds. Rhode Island transfer tax is calculated at $3.75 per $500 of the sales price and Massachusetts transfer tax is calculated at $2.28 per $500 of the sales price. Estimated proceeds may change due to final settlement adjustments including prorations, mortgage payoffs, liens, title charges, recording fees, commissions, and any negotiated credits or repairs. Final settlement figures will be determined by the closing attorney or settlement agent prior to closing.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Action Buttons (KW Red and KW Black) -->
-                <div class="flex flex-wrap justify-center gap-4 mt-6 hide-on-print pb-8">
-                    <button onclick="window.print()" class="bg-black text-white px-6 py-3.5 rounded-xl font-black hover:bg-slate-800 transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                        Print Report
-                    </button>
-                    <button onclick="saveAsPDF()" class="bg-[#B9212B] text-white px-6 py-3.5 rounded-xl font-black hover:bg-red-800 transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest shadow-lg shadow-red-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        Save as PDF
-                    </button>
-                    <button onclick="saveSnapshot()" class="bg-slate-800 text-white px-6 py-3.5 rounded-xl font-black hover:bg-slate-900 transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Save Image
-                    </button>
-                    <button onclick="sendEmail()" class="bg-[#B9212B] text-white px-6 py-3.5 rounded-xl font-black hover:bg-red-800 transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest shadow-lg shadow-red-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        Email Summary
-                    </button>
-                    <button onclick="shareText()" class="bg-slate-200 text-slate-800 px-6 py-3.5 rounded-xl font-black hover:bg-slate-300 transition-all flex items-center justify-center gap-3 text-sm uppercase tracking-widest">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        Text Summary
-                    </button>
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-3 mt-4 hide-on-print pb-6">
+                    <button onclick="window.print()" class="bg-black text-white px-5 py-3 rounded-xl font-black hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest">Print</button>
+                    <button onclick="saveAsPDF()" class="bg-[#B9212B] text-white px-5 py-3 rounded-xl font-black hover:bg-red-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest shadow-md">Save as PDF</button>
+                    <button onclick="saveSnapshot()" class="bg-slate-800 text-white px-5 py-3 rounded-xl font-black hover:bg-slate-900 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest">Save as Image</button>
+                    <button onclick="sendEmail()" class="bg-[#B9212B] text-white px-5 py-3 rounded-xl font-black hover:bg-red-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest shadow-md">Share via Email</button>
+                    <button onclick="shareText()" class="bg-slate-200 text-slate-800 px-5 py-3 rounded-xl font-black hover:bg-slate-300 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest">Share via Text</button>
                 </div>
             </div>
         </div>
@@ -337,6 +324,9 @@
 
     <script>
         let currentState = 'RI';
+        let listingCommType = 'percent';
+        let buyerCommType = 'percent';
+        let buyerCommBasis = 'gross';
 
         function formatCurrency(amount) {
             return new Intl.NumberFormat('en-US', {
@@ -352,15 +342,41 @@
             calculate();
         }
 
+        function setCommType(broker, type) {
+            if (broker === 'listing') {
+                listingCommType = type;
+                document.getElementById('listingTypePercent').classList.toggle('active', type === 'percent');
+                document.getElementById('listingTypeFlat').classList.toggle('active', type === 'flat');
+                document.getElementById('listingSymbol').classList.toggle('hidden', type !== 'flat');
+                document.getElementById('listingCommValue').style.paddingLeft = type === 'flat' ? '28px' : '0';
+            } else {
+                buyerCommType = type;
+                document.getElementById('buyerTypePercent').classList.toggle('active', type === 'percent');
+                document.getElementById('buyerTypeFlat').classList.toggle('active', type === 'flat');
+                document.getElementById('buyerSymbol').classList.toggle('hidden', type !== 'flat');
+                document.getElementById('buyerCommValue').style.paddingLeft = type === 'flat' ? '28px' : '0';
+                
+                // Toggle visibility of basis buttons based on whether it's percent or flat
+                document.getElementById('buyerBasisContainer').style.display = type === 'flat' ? 'none' : 'flex';
+            }
+            calculate();
+        }
+
+        function setCommBasis(basis) {
+            buyerCommBasis = basis;
+            document.getElementById('basisGross').classList.toggle('active', basis === 'gross');
+            document.getElementById('basisNet').classList.toggle('active', basis === 'net');
+            calculate();
+        }
+
         function calculate() {
             const salesPrice = parseFloat(document.getElementById('salesPrice').value) || 0;
             const sellerCredits = parseFloat(document.getElementById('sellerCredits').value) || 0;
-            const listingPct = parseFloat(document.getElementById('listingCommPercent').value) || 0;
-            const buyerPct = parseFloat(document.getElementById('buyerCommPercent').value) || 0;
+            const listingValue = parseFloat(document.getElementById('listingCommValue').value) || 0;
+            const buyerValue = parseFloat(document.getElementById('buyerCommValue').value) || 0;
             const mortgage = parseFloat(document.getElementById('mortgagePayoff').value) || 0;
             const addPayoff = parseFloat(document.getElementById('additionalPayoff').value) || 0;
             const misc = parseFloat(document.getElementById('miscCosts').value) || 0;
-            const isGross = document.getElementById('commissionBaseToggle').checked;
 
             if (currentState === 'MA') {
                 document.getElementById('taxLabel').innerText = "MA Transfer Tax (Fixed Cost)";
@@ -382,26 +398,40 @@
             }
             document.getElementById('transferTax').value = autoTransferTax.toFixed(2);
 
-            const listingComm = salesPrice * (listingPct / 100);
-            document.getElementById('dispListingBasis').innerText = `${listingPct}% of Gross Sales Price of ${formatCurrency(salesPrice)}`;
-
-            let netForBuyerComm;
-            if (isGross) {
-                netForBuyerComm = salesPrice;
-                document.getElementById('dispBuyerBasis').innerText = `${buyerPct}% of Gross Sales Price of ${formatCurrency(salesPrice)}`;
+            // Calculate Listing Commission
+            let listingCommTotal = 0;
+            if (listingCommType === 'percent') {
+                listingCommTotal = salesPrice * (listingValue / 100);
+                document.getElementById('dispListingBasis').innerText = `${listingValue}% of Gross Sales Price of ${formatCurrency(salesPrice)}`;
             } else {
-                netForBuyerComm = Math.max(0, salesPrice - sellerCredits);
-                document.getElementById('dispBuyerBasis').innerText = `${buyerPct}% of Net Sales Price of ${formatCurrency(netForBuyerComm)}`;
+                listingCommTotal = listingValue;
+                document.getElementById('dispListingBasis').innerText = `Flat Fee`;
+            }
+
+            // Calculate Buyer Commission
+            let buyerCommTotal = 0;
+            if (buyerCommType === 'percent') {
+                let netForBuyerComm;
+                if (buyerCommBasis === 'gross') {
+                    netForBuyerComm = salesPrice;
+                    document.getElementById('dispBuyerBasis').innerText = `${buyerValue}% of Gross Sales Price of ${formatCurrency(salesPrice)}`;
+                } else {
+                    netForBuyerComm = Math.max(0, salesPrice - sellerCredits);
+                    document.getElementById('dispBuyerBasis').innerText = `${buyerValue}% of Net Sales Price of ${formatCurrency(netForBuyerComm)}`;
+                }
+                buyerCommTotal = netForBuyerComm * (buyerValue / 100);
+            } else {
+                buyerCommTotal = buyerValue;
+                document.getElementById('dispBuyerBasis').innerText = `Flat Fee`;
             }
             
-            const buyerComm = netForBuyerComm * (buyerPct / 100);
-            const totalDeductions = sellerCredits + listingComm + buyerComm + autoTransferTax + mortgage + addPayoff + misc;
+            const totalDeductions = sellerCredits + listingCommTotal + buyerCommTotal + autoTransferTax + mortgage + addPayoff + misc;
             const finalNet = salesPrice - totalDeductions;
 
             document.getElementById('dispSalesPrice').innerText = formatCurrency(salesPrice);
             document.getElementById('dispSellerCredits').innerText = formatCurrency(sellerCredits);
-            document.getElementById('dispListingComm').innerText = formatCurrency(listingComm);
-            document.getElementById('dispBuyerComm').innerText = formatCurrency(buyerComm);
+            document.getElementById('dispListingComm').innerText = formatCurrency(listingCommTotal);
+            document.getElementById('dispBuyerComm').innerText = formatCurrency(buyerCommTotal);
             document.getElementById('dispTransferTax').innerText = formatCurrency(autoTransferTax);
             document.getElementById('dispMortgage').innerText = formatCurrency(mortgage);
             document.getElementById('dispAdditionalPayoff').innerText = formatCurrency(addPayoff);
@@ -425,10 +455,10 @@
         async function saveAsPDF() {
             const element = document.getElementById('snapshot-target');
             const opt = {
-                margin: [10, 10, 10, 10],
+                margin: 10,
                 filename: 'Joe_Pine_Seller_Proceeds_Estimate.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 3, useCORS: true },
+                html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             html2pdf().from(element).set(opt).save();
@@ -438,7 +468,7 @@
             const target = document.getElementById('snapshot-target');
             const canvas = await html2canvas(target, { 
                 useCORS: true, 
-                scale: 3, 
+                scale: 2, 
                 backgroundColor: "#ffffff",
                 logging: false
             });
@@ -457,7 +487,7 @@
             const message = `Hi there,\n\nHere is your estimated net proceeds from the sale of your home from Joe Pine Realtor:\n\n` +
                    `• Sales Price: ${salesPrice}\n` +
                    `• ${label}: ${totalNet}\n\n` +
-                   `Check your email for the full detailed breakdown. Let me know if you have any questions! Joe Pine | 401.327.0888`;
+                   `Let me know if you have any questions! Joe Pine | 401.327.0888`;
 
             const body = encodeURIComponent(message);
             window.location.href = `sms:?body=${body}`;
@@ -466,14 +496,14 @@
         function sendEmail() {
             const salesPrice = document.getElementById('dispSalesPrice').innerText;
             const sellerCredits = document.getElementById('dispSellerCredits').innerText;
-            const listingPct = document.getElementById('listingCommPercent').value || '0';
             const listingComm = document.getElementById('dispListingComm').innerText;
-            const buyerPct = document.getElementById('buyerCommPercent').value || '0';
-            const buyerBasisText = document.getElementById('dispBuyerBasis').innerText;
+            const listingBasis = document.getElementById('dispListingBasis').innerText;
             const buyerComm = document.getElementById('dispBuyerComm').innerText;
+            const buyerBasis = document.getElementById('dispBuyerBasis').innerText;
             const transferTax = document.getElementById('dispTransferTax').innerText;
             const mortgage = document.getElementById('dispMortgage').innerText;
-            const addPayoff = formatCurrency(parseFloat(document.getElementById('additionalPayoff').value) || 0);
+            const addPayoffValue = parseFloat(document.getElementById('additionalPayoff').value) || 0;
+            const addPayoffFormatted = formatCurrency(addPayoffValue);
             const misc = document.getElementById('dispMisc').innerText;
             const totalNet = document.getElementById('dispTotalNet').innerText;
             const label = document.getElementById('netLabel').innerText;
@@ -485,11 +515,11 @@
                 "Here is your estimated net proceeds from the sale of your home from Joe Pine Realtor:\n\n" +
                 "• Sales Price: " + salesPrice + "\n" +
                 "• Seller Credits: " + sellerCredits + "\n" +
-                "• Listing Broker Commission (" + listingPct + "% of Gross Sales Price of " + salesPrice + "): " + listingComm + "\n" +
-                "• Buyer Broker Commission (" + buyerBasisText + "): " + buyerComm + "\n" +
+                "• Listing Broker Commission (" + listingBasis + "): " + listingComm + "\n" +
+                "• Buyer Broker Commission (" + buyerBasis + "): " + buyerComm + "\n" +
                 "• " + taxLabel + ": " + transferTax + "\n" +
                 "• Mortgage Payoff (Est.): " + mortgage + "\n" +
-                "• Additional Payoff (Est.): " + addPayoff + "\n" +
+                "• Additional Payoff (Est.): " + addPayoffFormatted + "\n" +
                 "• Closing Costs (Est.): " + misc + "\n\n" +
                 label + ": " + totalNet + "\n\n" +
                 "Please let me know if you have any questions. I am always happy to help!\n\n" +
@@ -504,7 +534,7 @@
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
-        const inputIds = ['salesPrice', 'sellerCredits', 'listingCommPercent', 'buyerCommPercent', 'mortgagePayoff', 'additionalPayoff', 'miscCosts', 'commissionBaseToggle'];
+        const inputIds = ['salesPrice', 'sellerCredits', 'listingCommValue', 'buyerCommValue', 'mortgagePayoff', 'additionalPayoff', 'miscCosts'];
         inputIds.forEach(id => document.getElementById(id).addEventListener('input', calculate));
         window.onload = calculate;
     </script>
