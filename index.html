@@ -125,23 +125,23 @@
                 gap: 1rem !important;
             }
             
-            /* Ultra-tight spacing for 1-page fit */
-            .space-y-8 { margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
+            /* Tight spacing for 1-page fit */
+            .space-y-8 { margin-top: 0.2rem !important; margin-bottom: 0.2rem !important; }
             .space-y-5 { margin-top: 0.15rem !important; margin-bottom: 0.15rem !important; }
             .space-y-4 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
-            .pt-6 { padding-top: 0.4rem !important; }
-            .mt-6 { margin-top: 0.4rem !important; }
+            .pt-6 { padding-top: 0.3rem !important; }
+            .mt-6 { margin-top: 0.3rem !important; }
             .pb-3 { padding-bottom: 0.1rem !important; }
-            .mb-6 { margin-bottom: 0.2rem !important; }
+            .mb-6 { margin-bottom: 0.15rem !important; }
             
             .branding-footer {
-                padding-top: 0.4rem !important;
-                margin-top: 0.5rem !important;
+                padding-top: 0.3rem !important;
+                margin-top: 0.4rem !important;
             }
             .logo-stack {
                 border-left: 2px solid #f1f5f9 !important;
                 padding-left: 1rem !important;
-                gap: 0.5rem !important;
+                gap: 0.3rem !important;
                 display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
@@ -203,7 +203,7 @@
                         </div>
                         <div class="relative flex items-center">
                             <span id="listingSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
-                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -224,7 +224,7 @@
                         </div>
                         <div class="relative flex items-center">
                             <span id="buyerSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
-                            <input type="number" id="buyerCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                            <input type="number" id="buyerCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -263,8 +263,9 @@
                 </div>
             </div>
 
-            <!-- Right Column: Results -->
+            <!-- Right Column: Results (The Snapshot Target) -->
             <div id="output-column" class="lg:col-span-7 space-y-8 print:space-y-2">
+                <!-- snapshot-target explicitly excludes the buttons below it -->
                 <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-6 md:p-10 space-y-8 print:space-y-2 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
                     <div id="resultsCard">
                         <h2 class="text-xl font-black text-slate-900 mb-6 print:mb-2 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
@@ -329,7 +330,7 @@
 
                     <!-- Branding Footer -->
                     <div class="pt-6 border-t border-slate-200 branding-footer">
-                        <div class="flex flex-col md:flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
+                        <div class="flex flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
                             <div class="flex items-center gap-6 contact-side-wrapper">
                                 <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
                                     <img 
@@ -339,7 +340,7 @@
                                         class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
                                     >
                                 </div>
-                                <div class="text-center md:text-left space-y-0.5 contact-block">
+                                <div class="text-left space-y-0.5 contact-block">
                                     <p class="font-black text-2xl text-slate-900 uppercase tracking-tighter print:text-lg kw-red-text leading-tight">Joe Pine</p>
                                     <p class="text-slate-700 font-black text-sm print:text-xs uppercase tracking-widest leading-tight">REALTOR® RI & MA</p>
                                     <div class="text-slate-600 text-xs print:text-[10px] space-y-0.5 font-semibold leading-normal">
@@ -365,7 +366,7 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
+                <!-- Action Buttons: Kept outside snapshot-target so they don't appear in PDF/Image -->
                 <div class="flex flex-wrap justify-center gap-3 mt-4 hide-on-print pb-6">
                     <button onclick="window.print()" class="bg-black text-white px-5 py-3 rounded-xl font-black hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest">Print</button>
                     <button onclick="saveAsPDF()" class="bg-[#B9212B] text-white px-5 py-3 rounded-xl font-black hover:bg-red-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest shadow-md">Save as PDF</button>
@@ -513,7 +514,7 @@
                 margin: 5,
                 filename: 'Joe_Pine_Seller_Proceeds_Estimate.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2.5, useCORS: true, logging: false },
+                html2canvas: { scale: 3, useCORS: true, logging: false },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             html2pdf().from(element).set(opt).save();
