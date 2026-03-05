@@ -172,12 +172,20 @@
                     </div>
                 </div>
 
-                <button onclick="window.print()" class="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 mt-4 hide-on-print">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    Print or Save PDF
-                </button>
+                <div class="flex flex-col gap-3 mt-4 hide-on-print">
+                    <button onclick="window.print()" class="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Print or Save PDF
+                    </button>
+                    <button onclick="sendEmail()" class="w-full bg-[#B9212B] text-white py-3 rounded-lg font-bold hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Email Breakdown
+                    </button>
+                </div>
             </div>
 
             <!-- Right Column: Results -->
@@ -343,6 +351,35 @@
                 totalNetEl.classList.remove('text-[#B9212B]');
                 netLabelEl.innerText = "Estimated due to seller at closing";
             }
+        }
+
+        function sendEmail() {
+            const salesPrice = document.getElementById('dispSalesPrice').innerText;
+            const sellerCredits = document.getElementById('dispSellerCredits').innerText;
+            const listingComm = document.getElementById('dispListingComm').innerText;
+            const buyerComm = document.getElementById('dispBuyerComm').innerText;
+            const transferTax = document.getElementById('dispTransferTax').innerText;
+            const mortgage = document.getElementById('dispMortgage').innerText;
+            const misc = document.getElementById('dispMisc').innerText;
+            const totalNet = document.getElementById('dispTotalNet').innerText;
+            const label = document.getElementById('netLabel').innerText;
+
+            const subject = encodeURIComponent("Estimated Home Sale Proceeds Breakdown");
+            const body = encodeURIComponent(
+                "Hi there,\n\n" +
+                "It was great chatting with you about your home. Here is the breakdown of the estimated proceeds we discussed:\n\n" +
+                "Sales Price: " + salesPrice + "\n" +
+                "Seller Credits: " + sellerCredits + "\n" +
+                "Listing Commission: " + listingComm + "\n" +
+                "Buyer Agent Commission: " + buyerComm + "\n" +
+                "RI Transfer Tax: " + transferTax + "\n" +
+                "Mortgage Payoff (Est.): " + mortgage + "\n" +
+                "Closing Costs (Est.): " + misc + "\n\n" +
+                label + ": " + totalNet + "\n\n" +
+                "Please let me know if you have any questions."
+            );
+
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
         const inputIds = ['salesPrice', 'sellerCredits', 'listingCommPercent', 'buyerCommPercent', 'mortgagePayoff', 'miscCosts', 'commissionBaseToggle'];
