@@ -15,7 +15,6 @@
         }
         .input-group:focus-within label { color: #B9212B; }
         
-        /* Type Selection Toggles (% vs $ and Gross vs Net) */
         .type-toggle {
             display: flex;
             background: #f1f5f9;
@@ -53,6 +52,12 @@
             border-color: #B9212B;
             color: white;
             box-shadow: 0 4px 10px 0px rgba(185, 33, 43, 0.2);
+        }
+
+        /* Specific styles for PDF and Print exports */
+        .pdf-export-mode {
+            width: 850px !important; /* Force desktop width for high-quality capture */
+            background-color: white !important;
         }
 
         @media print {
@@ -106,45 +111,45 @@
             }
             .kw-red-text { color: #B9212B !important; }
             
-            /* FORCED PRINT FOOTER LAYOUT */
+            /* FORCE HORIZONTAL FLEX IN PDF/PRINT */
             .branding-row {
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                text-align: left !important;
                 width: 100% !important;
-            }
-            .contact-block {
-                text-align: left !important;
             }
             .contact-side-wrapper {
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
-                gap: 1rem !important;
+                gap: 1.5rem !important;
+                text-align: left !important;
+            }
+            .logo-stack {
+                border-left: 2px solid #f1f5f9 !important;
+                padding-left: 1.5rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.5rem !important;
+            }
+            .contact-block p {
+                margin: 0 !important;
+                line-height: 1.4 !important;
             }
             
-            /* Tight spacing for 1-page fit */
+            /* Tighten spacing to ensure 1-page fit */
             .space-y-8 { margin-top: 0.2rem !important; margin-bottom: 0.2rem !important; }
-            .space-y-5 { margin-top: 0.15rem !important; margin-bottom: 0.15rem !important; }
+            .space-y-5 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
             .space-y-4 { margin-top: 0.1rem !important; margin-bottom: 0.1rem !important; }
             .pt-6 { padding-top: 0.3rem !important; }
             .mt-6 { margin-top: 0.3rem !important; }
             .pb-3 { padding-bottom: 0.1rem !important; }
             .mb-6 { margin-bottom: 0.15rem !important; }
-            
             .branding-footer {
-                padding-top: 0.3rem !important;
+                padding-top: 0.4rem !important;
                 margin-top: 0.4rem !important;
-            }
-            .logo-stack {
-                border-left: 2px solid #f1f5f9 !important;
-                padding-left: 1rem !important;
-                gap: 0.3rem !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
             }
         }
     </style>
@@ -265,7 +270,6 @@
 
             <!-- Right Column: Results (The Snapshot Target) -->
             <div id="output-column" class="lg:col-span-7 space-y-8 print:space-y-2">
-                <!-- snapshot-target explicitly excludes the buttons below it -->
                 <div id="snapshot-target" class="bg-slate-50/50 rounded-3xl p-6 md:p-10 space-y-8 print:space-y-2 border-2 border-slate-100 print:bg-transparent print:p-0 print:border-none shadow-sm">
                     <div id="resultsCard">
                         <h2 class="text-xl font-black text-slate-900 mb-6 print:mb-2 border-b-4 border-[#B9212B] pb-2 uppercase tracking-tighter">Estimated Net Proceeds</h2>
@@ -328,10 +332,10 @@
                         </div>
                     </div>
 
-                    <!-- Branding Footer -->
+                    <!-- Branding Footer (FORCED HORIZONTAL) -->
                     <div class="pt-6 border-t border-slate-200 branding-footer">
-                        <div class="flex flex-row gap-8 items-center justify-between mb-6 print:mb-2 branding-row">
-                            <div class="flex items-center gap-6 contact-side-wrapper">
+                        <div class="flex flex-row gap-8 items-center justify-between mb-6 branding-row">
+                            <div class="flex flex-row items-center gap-6 contact-side-wrapper">
                                 <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
                                     <img 
                                         src="Joe (1).JPG" 
@@ -366,7 +370,7 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons: Kept outside snapshot-target so they don't appear in PDF/Image -->
+                <!-- Action Buttons -->
                 <div class="flex flex-wrap justify-center gap-3 mt-4 hide-on-print pb-6">
                     <button onclick="window.print()" class="bg-black text-white px-5 py-3 rounded-xl font-black hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest">Print</button>
                     <button onclick="saveAsPDF()" class="bg-[#B9212B] text-white px-5 py-3 rounded-xl font-black hover:bg-red-800 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest shadow-md">Save as PDF</button>
@@ -411,8 +415,6 @@
                 document.getElementById('buyerTypeFlat').classList.toggle('active', type === 'flat');
                 document.getElementById('buyerSymbol').classList.toggle('hidden', type !== 'flat');
                 document.getElementById('buyerCommValue').style.paddingLeft = type === 'flat' ? '28px' : '0';
-                
-                // Toggle visibility of basis buttons based on whether it's percent or flat
                 document.getElementById('buyerBasisContainer').style.display = type === 'flat' ? 'none' : 'flex';
             }
             calculate();
@@ -454,7 +456,6 @@
             }
             document.getElementById('transferTax').value = autoTransferTax.toFixed(2);
 
-            // Calculate Listing Commission
             let listingCommTotal = 0;
             if (listingCommType === 'percent') {
                 listingCommTotal = salesPrice * (listingValue / 100);
@@ -464,7 +465,6 @@
                 document.getElementById('dispListingBasis').innerText = `Flat Fee`;
             }
 
-            // Calculate Buyer Commission
             let buyerCommTotal = 0;
             if (buyerCommType === 'percent') {
                 let netForBuyerComm;
@@ -510,39 +510,80 @@
 
         async function saveAsPDF() {
             const element = document.getElementById('snapshot-target');
+            
+            // Temporary forcing desktop layout for the capture
+            element.classList.add('pdf-export-mode');
+            
             const opt = {
                 margin: 5,
                 filename: 'Joe_Pine_Seller_Proceeds_Estimate.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 3, useCORS: true, logging: false },
+                html2canvas: { 
+                    scale: 3, 
+                    useCORS: true, 
+                    logging: false,
+                    width: 850 // Fix the capture width to prevent wrapping
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            html2pdf().from(element).set(opt).save();
+
+            try {
+                await html2pdf().from(element).set(opt).save();
+            } finally {
+                element.classList.remove('pdf-export-mode');
+            }
         }
 
         async function saveSnapshot() {
             const target = document.getElementById('snapshot-target');
-            const canvas = await html2canvas(target, { 
-                useCORS: true, 
-                scale: 3, 
-                backgroundColor: "#ffffff",
-                logging: false
-            });
-            const image = canvas.toDataURL("image/png");
-            const link = document.createElement('a');
-            link.download = 'Joe_Pine_Seller_Proceeds_Estimate.png';
-            link.href = image;
-            link.click();
+            
+            // Temporary forcing desktop layout
+            target.classList.add('pdf-export-mode');
+            
+            try {
+                const canvas = await html2canvas(target, { 
+                    useCORS: true, 
+                    scale: 3, 
+                    backgroundColor: "#ffffff",
+                    logging: false,
+                    width: 850
+                });
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.download = 'Joe_Pine_Seller_Proceeds_Estimate.png';
+                link.href = image;
+                link.click();
+            } finally {
+                target.classList.remove('pdf-export-mode');
+            }
         }
 
         function shareText() {
             const salesPrice = document.getElementById('dispSalesPrice').innerText;
+            const sellerCredits = document.getElementById('dispSellerCredits').innerText;
+            const listingComm = document.getElementById('dispListingComm').innerText;
+            const listingBasis = document.getElementById('dispListingBasis').innerText;
+            const buyerComm = document.getElementById('dispBuyerComm').innerText;
+            const buyerBasis = document.getElementById('dispBuyerBasis').innerText;
+            const transferTax = document.getElementById('dispTransferTax').innerText;
+            const mortgage = document.getElementById('dispMortgage').innerText;
+            const addPayoffValue = parseFloat(document.getElementById('additionalPayoff').value) || 0;
+            const addPayoffFormatted = formatCurrency(addPayoffValue);
+            const misc = document.getElementById('dispMisc').innerText;
             const totalNet = document.getElementById('dispTotalNet').innerText;
             const label = document.getElementById('netLabel').innerText;
+            const taxLabel = currentState === 'MA' ? 'MA Transfer Tax' : 'RI Transfer Tax';
             
             const message = `Hi there,\n\nHere is your estimated net proceeds from the sale of your home from Joe Pine Realtor:\n\n` +
                    `• Sales Price: ${salesPrice}\n` +
-                   `• ${label}: ${totalNet}\n\n` +
+                   `• Seller Credits: ${sellerCredits}\n` +
+                   `• Listing Broker Commission (${listingBasis}): ${listingComm}\n` +
+                   `• Buyer Broker Commission (${buyerBasis}): ${buyerComm}\n` +
+                   `• ${taxLabel}: ${transferTax}\n` +
+                   `• Mortgage Payoff (Est.): ${mortgage}\n` +
+                   `• Additional Payoff (Est.): ${addPayoffFormatted}\n` +
+                   `• Closing Costs (Est.): ${misc}\n\n` +
+                   `${label}: ${totalNet}\n\n` +
                    `Let me know if you have any questions! Joe Pine | 401.327.0888`;
 
             const body = encodeURIComponent(message);
