@@ -109,7 +109,7 @@
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print-shadow border border-slate-100">
+    <div id="workbook-container" class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print-shadow border border-slate-100">
         <div class="bg-[#B9212B] text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold tracking-tight uppercase">Seller Net Workbook</h1>
@@ -421,12 +421,25 @@
         }
 
         async function saveSnapshot() {
-            const card = document.getElementById('resultsCard');
-            card.classList.add('print:border-none');
-            const canvas = await html2canvas(card, { useCORS: true, scale: 2, backgroundColor: "#ffffff" });
+            const container = document.getElementById('workbook-container');
+            const buttons = document.querySelectorAll('.hide-on-print');
+            
+            // Temporarily hide buttons for the snapshot
+            buttons.forEach(btn => btn.style.display = 'none');
+            
+            const canvas = await html2canvas(container, { 
+                useCORS: true, 
+                scale: 2, 
+                backgroundColor: "#ffffff",
+                logging: false
+            });
+            
+            // Restore buttons
+            buttons.forEach(btn => btn.style.display = '');
+
             const image = canvas.toDataURL("image/png");
             const link = document.createElement('a');
-            link.download = 'Seller_Net_Estimate.png';
+            link.download = 'Joe_Pine_Seller_Net_Workbook.png';
             link.href = image;
             link.click();
         }
