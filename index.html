@@ -162,7 +162,7 @@
                         </div>
                         <div class="relative flex items-center">
                             <span id="listingSymbol" class="absolute left-0 text-[#B9212B] font-bold text-base hidden">$</span>
-                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
+                            <input type="number" id="listingCommValue" value="" placeholder="0" step="0.1" class="w-full py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                         </div>
                     </div>
 
@@ -387,7 +387,6 @@
                 document.getElementById('buyerTypeFlat').classList.toggle('active', type === 'flat');
                 document.getElementById('buyerSymbol').classList.toggle('hidden', type !== 'flat');
                 document.getElementById('buyerCommValue').style.paddingLeft = type === 'flat' ? '28px' : '0';
-                
                 document.getElementById('buyerBasisContainer').style.display = type === 'flat' ? 'none' : 'flex';
             }
             calculate();
@@ -416,16 +415,25 @@
                 document.getElementById('resTaxHelp').innerText = "Calculated at $2.28 per $500 sales price";
             } else {
                 document.getElementById('taxLabel').innerText = "RI Transfer Tax (Fixed Cost)";
-                document.getElementById('taxHelpText').innerText = "Rate: $3.75 per $500 sales price";
                 document.getElementById('resTaxLabel').innerText = "RI Transfer Tax";
-                document.getElementById('resTaxHelp').innerText = "Calculated at $3.75 per $500 sales price";
+                
+                if (salesPrice > 824000) {
+                    document.getElementById('taxHelpText').innerText = "Rate: $3.75 per $500 (Base) + $3.75 per $500 (Over $824k)";
+                    document.getElementById('resTaxHelp').innerText = "Calculated at $3.75 per $500 plus $3.75 per $500 over $824k";
+                } else {
+                    document.getElementById('taxHelpText').innerText = "Rate: $3.75 per $500 sales price";
+                    document.getElementById('resTaxHelp').innerText = "Calculated at $3.75 per $500 sales price";
+                }
             }
 
             let autoTransferTax = 0;
             if (currentState === 'MA') {
                 autoTransferTax = Math.ceil(salesPrice / 500) * 2.28;
             } else {
-                autoTransferTax = Math.ceil(salesPrice / 500) * 3.75;
+                // Tiered RI calculation
+                const baseTax = Math.ceil(salesPrice / 500) * 3.75;
+                const tier2Tax = salesPrice > 824000 ? Math.ceil((salesPrice - 824000) / 500) * 3.75 : 0;
+                autoTransferTax = baseTax + tier2Tax;
             }
             document.getElementById('transferTax').value = autoTransferTax.toFixed(2);
 
