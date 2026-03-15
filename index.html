@@ -289,7 +289,7 @@
                                     <div class="flex justify-between items-start gap-4 text-base print:text-sm">
                                         <div class="min-w-0 flex-1">
                                             <span class="text-slate-600 font-semibold">Additional Payoffs</span>
-                                            <div id="dispAdditionalPayoffMeta" class="mt-1 space-y-2 text-[11px] print:text-[9px] text-slate-400 font-medium">No additional payoffs added</div>
+                                            <div id="dispAdditionalPayoffMeta" class="mt-1 hidden space-y-2 text-[11px] print:text-[9px] text-slate-400 font-medium"></div>
                                         </div>
                                         <span class="shrink-0 pt-0.5 text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
                                     </div>
@@ -610,9 +610,11 @@
             meta.innerHTML = '';
 
             if (!entries.length) {
-                meta.textContent = 'No additional payoffs added';
+                meta.classList.add('hidden');
                 return;
             }
+
+            meta.classList.remove('hidden');
 
             entries.forEach(entry => {
                 const detailLine = document.createElement('div');
