@@ -205,11 +205,14 @@
                     </div>
 
                     <div class="input-group">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Additional Payoff (Est.)</label>
-                        <div class="relative flex items-center">
-                            <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
-                            <input type="number" id="additionalPayoff" value="" placeholder="0" class="w-full pl-8 py-1.5 border-b-2 border-slate-100 focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Additional Payoffs (Est.)</label>
+                            <button type="button" onclick="addAdditionalPayoff()" class="shrink-0 rounded-full border border-[#B9212B]/20 bg-[#B9212B]/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#B9212B] transition hover:bg-[#B9212B] hover:text-white">Add Payoff</button>
                         </div>
+                        <div id="additionalPayoffsEmpty" class="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                            No additional payoffs added.
+                        </div>
+                        <div id="additionalPayoffsContainer" class="mt-3 space-y-3"></div>
                     </div>
 
                     <div class="input-group">
@@ -283,9 +286,12 @@
                                         <span class="text-slate-600 font-semibold">Mortgage Payoff</span>
                                         <span class="text-[#B9212B] font-black" id="dispMortgage">$0.00</span>
                                     </div>
-                                    <div class="flex justify-between items-center text-base print:text-sm">
-                                        <span class="text-slate-600 font-semibold">Additional Payoff</span>
-                                        <span class="text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
+                                    <div class="flex justify-between items-start gap-4 text-base print:text-sm">
+                                        <div class="min-w-0 flex-1">
+                                            <span class="text-slate-600 font-semibold">Additional Payoffs</span>
+                                            <div id="dispAdditionalPayoffMeta" class="mt-1 space-y-2 text-[11px] print:text-[9px] text-slate-400 font-medium">No additional payoffs added</div>
+                                        </div>
+                                        <span class="shrink-0 pt-0.5 text-[#B9212B] font-black" id="dispAdditionalPayoff">$0.00</span>
                                     </div>
                                     <div class="flex justify-between items-center text-base print:text-sm">
                                         <span class="text-slate-600 font-semibold">Closing Cost</span>
@@ -308,7 +314,7 @@
                                 <div class="flex flex-row items-center gap-6 contact-side-wrapper">
                                     <div class="relative w-28 h-28 shrink-0 print:w-20 print:h-20">
                                         <img 
-                                            src="Joe (1).JPG" 
+                                            src="Joe (1) (1).JPG" 
                                             alt="Joe Pine" 
                                             onerror="this.src='https://ui-avatars.com/api/?name=Joe+Pine&background=B9212B&color=fff&size=200'"
                                             class="w-full h-full object-cover rounded-full border-4 border-white shadow-xl print:shadow-none print:border-slate-200"
@@ -327,8 +333,8 @@
                                 </div>
                                 
                                 <div id="logo-stack-target" class="flex flex-col items-center justify-center gap-4 border-l-2 border-slate-100 pl-8 print:pl-4 logo-stack">
-                                    <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB.png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
-                                    <img src="Platinum Logo Black Transparent (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
+                                    <img src="KellerWilliams_Realty_LeadingEdge_Logo_RGB (2).png" alt="Keller Williams Logo" class="h-10 w-auto print:h-8" onerror="this.style.display='none'">
+                                    <img src="Platinum Logo Black Transparent (1) (1).png" alt="Platinum Real Estate Group Logo" class="h-14 w-auto max-w-[140px] print:h-10" onerror="this.style.display='none'">
                                 </div>
                             </div>
 
@@ -358,12 +364,142 @@
         let listingCommType = 'percent';
         let buyerCommType = 'percent';
         let buyerCommBasis = 'gross';
+        let isRestoringState = false;
+        const persistenceKey = 'sellerNetState';
+        const persistenceDays = 30;
+        const inputIds = ['salesPrice', 'sellerCredits', 'listingCommValue', 'buyerCommValue', 'mortgagePayoff', 'miscCosts'];
 
         function formatCurrency(amount) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
             }).format(amount);
+        }
+
+        function setCookie(name, value, days = persistenceDays) {
+            const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+        }
+
+        function getCookie(name) {
+            const prefix = `${name}=`;
+            const cookie = document.cookie
+                .split('; ')
+                .find(entry => entry.startsWith(prefix));
+
+            return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : '';
+        }
+
+        function clearCookie(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+        }
+
+        function clearAdditionalPayoffs() {
+            document.getElementById('additionalPayoffsContainer').innerHTML = '';
+            toggleAdditionalPayoffEmptyState();
+        }
+
+        function collectFormState() {
+            const inputs = {};
+            inputIds.forEach(id => {
+                inputs[id] = document.getElementById(id).value;
+            });
+
+            return {
+                currentState,
+                listingCommType,
+                buyerCommType,
+                buyerCommBasis,
+                inputs,
+                additionalPayoffs: getAdditionalPayoffRows().map(row => ({
+                    label: row.querySelector('.additional-payoff-label').value,
+                    amount: row.querySelector('.additional-payoff-amount').value
+                }))
+            };
+        }
+
+        function saveFormState() {
+            if (isRestoringState) {
+                return;
+            }
+
+            const serializedState = JSON.stringify(collectFormState());
+
+            if (serializedState.length <= 3500) {
+                setCookie(persistenceKey, serializedState);
+            } else {
+                clearCookie(persistenceKey);
+            }
+
+            try {
+                window.localStorage.setItem(persistenceKey, serializedState);
+            } catch (error) {
+                console.warn('Unable to save local backup state.', error);
+            }
+        }
+
+        function loadFormState() {
+            let serializedState = '';
+
+            try {
+                serializedState = getCookie(persistenceKey);
+            } catch (error) {
+                console.warn('Unable to read saved cookie state.', error);
+            }
+
+            if (!serializedState) {
+                try {
+                    serializedState = window.localStorage.getItem(persistenceKey) || '';
+                } catch (error) {
+                    console.warn('Unable to read local backup state.', error);
+                }
+            }
+
+            if (!serializedState) {
+                return false;
+            }
+
+            let savedState;
+            try {
+                savedState = JSON.parse(serializedState);
+            } catch (error) {
+                console.warn('Saved state could not be parsed.', error);
+                return false;
+            }
+
+            isRestoringState = true;
+
+            if (savedState.currentState === 'RI' || savedState.currentState === 'MA') {
+                setState(savedState.currentState);
+            }
+
+            if (savedState.listingCommType === 'percent' || savedState.listingCommType === 'flat') {
+                setCommType('listing', savedState.listingCommType);
+            }
+
+            if (savedState.buyerCommType === 'percent' || savedState.buyerCommType === 'flat') {
+                setCommType('buyer', savedState.buyerCommType);
+            }
+
+            if (savedState.buyerCommBasis === 'gross' || savedState.buyerCommBasis === 'net') {
+                setCommBasis(savedState.buyerCommBasis);
+            }
+
+            const savedInputs = savedState.inputs || {};
+            inputIds.forEach(id => {
+                if (Object.prototype.hasOwnProperty.call(savedInputs, id)) {
+                    document.getElementById(id).value = savedInputs[id];
+                }
+            });
+
+            clearAdditionalPayoffs();
+            (savedState.additionalPayoffs || []).forEach(payoff => {
+                addAdditionalPayoff(payoff.label || '', payoff.amount ?? '', false);
+            });
+
+            isRestoringState = false;
+            calculate();
+            return true;
         }
 
         function setState(state) {
@@ -398,13 +534,128 @@
             calculate();
         }
 
+        function getAdditionalPayoffRows() {
+            return Array.from(document.querySelectorAll('.additional-payoff-row'));
+        }
+
+        function getAdditionalPayoffEntries() {
+            return getAdditionalPayoffRows().map((row, index) => {
+                const labelInput = row.querySelector('.additional-payoff-label');
+                const amountInput = row.querySelector('.additional-payoff-amount');
+                const rawLabel = labelInput.value.trim();
+                const amount = parseFloat(amountInput.value) || 0;
+
+                return {
+                    rawLabel,
+                    label: rawLabel || `Additional Payoff ${index + 1}`,
+                    amount
+                };
+            });
+        }
+
+        function getFilledAdditionalPayoffEntries(entries = getAdditionalPayoffEntries()) {
+            return entries.filter(entry => entry.amount > 0 || entry.rawLabel);
+        }
+
+        function toggleAdditionalPayoffEmptyState() {
+            const emptyState = document.getElementById('additionalPayoffsEmpty');
+            emptyState.style.display = getAdditionalPayoffRows().length ? 'none' : 'block';
+        }
+
+        function addAdditionalPayoff(label = '', amount = '', shouldFocus = true) {
+            const container = document.getElementById('additionalPayoffsContainer');
+            const row = document.createElement('div');
+            row.className = 'additional-payoff-row grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:grid-cols-12 sm:items-end';
+            row.innerHTML = `
+                <div class="sm:col-span-6">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Payoff Label</label>
+                    <input type="text" placeholder="HELOC, lien, etc." class="additional-payoff-label w-full py-1.5 border-b-2 border-slate-100 bg-transparent focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                </div>
+                <div class="sm:col-span-4">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Amount</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
+                        <input type="number" placeholder="0" class="additional-payoff-amount w-full pl-8 py-1.5 border-b-2 border-slate-100 bg-transparent focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
+                    </div>
+                </div>
+                <div class="sm:col-span-2">
+                    <button type="button" class="additional-payoff-remove w-full rounded-xl border border-slate-200 px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 transition hover:border-[#B9212B] hover:text-[#B9212B]">Remove</button>
+                </div>
+            `;
+
+            const labelInput = row.querySelector('.additional-payoff-label');
+            const amountInput = row.querySelector('.additional-payoff-amount');
+            const removeButton = row.querySelector('.additional-payoff-remove');
+
+            labelInput.value = label;
+            amountInput.value = amount;
+            labelInput.addEventListener('input', calculate);
+            amountInput.addEventListener('input', calculate);
+            removeButton.addEventListener('click', () => {
+                row.remove();
+                toggleAdditionalPayoffEmptyState();
+                calculate();
+            });
+
+            container.appendChild(row);
+            toggleAdditionalPayoffEmptyState();
+            if (shouldFocus) {
+                labelInput.focus();
+            }
+            calculate();
+        }
+
+        function renderAdditionalPayoffSummary(entries) {
+            const meta = document.getElementById('dispAdditionalPayoffMeta');
+            meta.innerHTML = '';
+
+            if (!entries.length) {
+                meta.textContent = 'No additional payoffs added';
+                return;
+            }
+
+            entries.forEach(entry => {
+                const detailLine = document.createElement('div');
+                detailLine.className = 'flex items-center justify-between gap-3 text-slate-500';
+
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'truncate';
+                labelSpan.textContent = entry.label;
+
+                const amountSpan = document.createElement('span');
+                amountSpan.className = 'shrink-0 font-semibold text-slate-600';
+                amountSpan.textContent = formatCurrency(entry.amount);
+
+                detailLine.appendChild(labelSpan);
+                detailLine.appendChild(amountSpan);
+                meta.appendChild(detailLine);
+            });
+        }
+
+        function getAdditionalPayoffShareSummary() {
+            const entries = getFilledAdditionalPayoffEntries();
+
+            if (!entries.length) {
+                return formatCurrency(0);
+            }
+
+            if (entries.length === 1) {
+                return `${entries[0].label}: ${formatCurrency(entries[0].amount)}`;
+            }
+
+            const total = entries.reduce((sum, entry) => sum + entry.amount, 0);
+            return `${entries.length} payoffs totaling ${formatCurrency(total)}`;
+        }
+
         function calculate() {
             const salesPrice = parseFloat(document.getElementById('salesPrice').value) || 0;
             const sellerCredits = parseFloat(document.getElementById('sellerCredits').value) || 0;
             const listingValue = parseFloat(document.getElementById('listingCommValue').value) || 0;
             const buyerValue = parseFloat(document.getElementById('buyerCommValue').value) || 0;
             const mortgage = parseFloat(document.getElementById('mortgagePayoff').value) || 0;
-            const addPayoff = parseFloat(document.getElementById('additionalPayoff').value) || 0;
+            const additionalPayoffEntries = getAdditionalPayoffEntries();
+            const filledAdditionalPayoffEntries = getFilledAdditionalPayoffEntries(additionalPayoffEntries);
+            const additionalPayoffTotal = filledAdditionalPayoffEntries.reduce((sum, entry) => sum + entry.amount, 0);
             const misc = parseFloat(document.getElementById('miscCosts').value) || 0;
 
             if (currentState === 'MA') {
@@ -460,7 +711,7 @@
                 document.getElementById('dispBuyerBasis').innerText = `Flat Fee`;
             }
             
-            const totalDeductions = sellerCredits + listingCommTotal + buyerCommTotal + autoTransferTax + mortgage + addPayoff + misc;
+            const totalDeductions = sellerCredits + listingCommTotal + buyerCommTotal + autoTransferTax + mortgage + additionalPayoffTotal + misc;
             const finalNet = salesPrice - totalDeductions;
 
             document.getElementById('dispSalesPrice').innerText = formatCurrency(salesPrice);
@@ -469,7 +720,8 @@
             document.getElementById('dispBuyerComm').innerText = formatCurrency(buyerCommTotal);
             document.getElementById('dispTransferTax').innerText = formatCurrency(autoTransferTax);
             document.getElementById('dispMortgage').innerText = formatCurrency(mortgage);
-            document.getElementById('dispAdditionalPayoff').innerText = formatCurrency(addPayoff);
+            document.getElementById('dispAdditionalPayoff').innerText = formatCurrency(additionalPayoffTotal);
+            renderAdditionalPayoffSummary(filledAdditionalPayoffEntries);
             document.getElementById('dispMisc').innerText = formatCurrency(misc);
             
             const totalNetEl = document.getElementById('dispTotalNet');
@@ -485,6 +737,8 @@
                 totalNetEl.classList.remove('text-[#B9212B]');
                 netLabelEl.innerText = "Estimated Net to Seller";
             }
+
+            saveFormState();
         }
 
         async function saveAsPDF() {
@@ -571,8 +825,7 @@
             const buyerBasis = document.getElementById('dispBuyerBasis').innerText;
             const transferTax = document.getElementById('dispTransferTax').innerText;
             const mortgage = document.getElementById('dispMortgage').innerText;
-            const addPayoffValue = parseFloat(document.getElementById('additionalPayoff').value) || 0;
-            const addPayoffFormatted = formatCurrency(addPayoffValue);
+            const addPayoffFormatted = getAdditionalPayoffShareSummary();
             const misc = document.getElementById('dispMisc').innerText;
             const totalNet = document.getElementById('dispTotalNet').innerText;
             const label = document.getElementById('netLabel').innerText;
@@ -593,8 +846,7 @@
             const buyerBasis = document.getElementById('dispBuyerBasis').innerText;
             const transferTax = document.getElementById('dispTransferTax').innerText;
             const mortgage = document.getElementById('dispMortgage').innerText;
-            const addPayoffValue = parseFloat(document.getElementById('additionalPayoff').value) || 0;
-            const addPayoffFormatted = formatCurrency(addPayoffValue);
+            const addPayoffFormatted = getAdditionalPayoffShareSummary();
             const misc = document.getElementById('dispMisc').innerText;
             const totalNet = document.getElementById('dispTotalNet').innerText;
             const label = document.getElementById('netLabel').innerText;
@@ -625,9 +877,13 @@
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
-        const inputIds = ['salesPrice', 'sellerCredits', 'listingCommValue', 'buyerCommValue', 'mortgagePayoff', 'additionalPayoff', 'miscCosts'];
         inputIds.forEach(id => document.getElementById(id).addEventListener('input', calculate));
-        window.onload = calculate;
+        window.onload = () => {
+            toggleAdditionalPayoffEmptyState();
+            if (!loadFormState()) {
+                calculate();
+            }
+        };
     </script>
 </body>
 </html>
