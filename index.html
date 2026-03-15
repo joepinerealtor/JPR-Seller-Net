@@ -286,7 +286,7 @@
                                         <span class="text-slate-600 font-semibold">Mortgage Payoff</span>
                                         <span class="text-[#B9212B] font-black" id="dispMortgage">$0.00</span>
                                     </div>
-                                    <div class="flex justify-between items-start gap-4 text-base print:text-sm">
+                                    <div id="additionalPayoffSummaryRow" class="hidden flex justify-between items-start gap-4 text-base print:text-sm">
                                         <div class="min-w-0 flex-1">
                                             <span class="text-slate-600 font-semibold">Additional Payoffs</span>
                                             <div id="dispAdditionalPayoffMeta" class="mt-1 hidden space-y-2 text-[11px] print:text-[9px] text-slate-400 font-medium"></div>
@@ -554,7 +554,7 @@
         }
 
         function getFilledAdditionalPayoffEntries(entries = getAdditionalPayoffEntries()) {
-            return entries.filter(entry => entry.amount > 0 || entry.rawLabel);
+            return entries.filter(entry => entry.amount > 0);
         }
 
         function toggleAdditionalPayoffEmptyState() {
@@ -606,14 +606,17 @@
         }
 
         function renderAdditionalPayoffSummary(entries) {
+            const row = document.getElementById('additionalPayoffSummaryRow');
             const meta = document.getElementById('dispAdditionalPayoffMeta');
             meta.innerHTML = '';
 
             if (!entries.length) {
+                row.classList.add('hidden');
                 meta.classList.add('hidden');
                 return;
             }
 
+            row.classList.remove('hidden');
             meta.classList.remove('hidden');
 
             entries.forEach(entry => {
