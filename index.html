@@ -567,19 +567,27 @@
             const row = document.createElement('div');
             row.className = 'additional-payoff-row grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:grid-cols-12 sm:items-end';
             row.innerHTML = `
-                <div class="sm:col-span-6">
-                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Payoff Label</label>
-                    <input type="text" placeholder="HELOC, lien, etc." class="additional-payoff-label w-full py-1.5 border-b-2 border-slate-100 bg-transparent focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
+                <div class="sm:col-span-5">
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Payoff Item</label>
+                    <input type="text" placeholder="HELOC, Solar, Lien, Etc." class="additional-payoff-label w-full py-1.5 border-b-2 border-slate-100 bg-transparent focus:border-[#B9212B] outline-none transition-all font-bold text-slate-900 text-base">
                 </div>
-                <div class="sm:col-span-4">
+                <div class="sm:col-span-5">
                     <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Amount</label>
                     <div class="relative flex items-center">
                         <span class="absolute left-0 text-[#B9212B] font-bold text-base">$</span>
                         <input type="number" placeholder="0" class="additional-payoff-amount w-full pl-8 py-1.5 border-b-2 border-slate-100 bg-transparent focus:border-[#B9212B] outline-none transition-all font-black text-slate-900 text-base">
                     </div>
                 </div>
-                <div class="sm:col-span-2">
-                    <button type="button" class="additional-payoff-remove w-full rounded-xl border border-slate-200 px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 transition hover:border-[#B9212B] hover:text-[#B9212B]">Remove</button>
+                <div class="sm:col-span-2 flex sm:justify-end">
+                    <button type="button" aria-label="Delete payoff" title="Delete payoff" class="additional-payoff-remove inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all hover:border-[#B9212B]/30 hover:bg-[#B9212B]/5 hover:text-[#B9212B] focus:border-[#B9212B]/30 focus:bg-[#B9212B]/5 focus:text-[#B9212B] focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 6h18"></path>
+                            <path d="M8 6V4h8v2"></path>
+                            <path d="M19 6l-1 14H6L5 6"></path>
+                            <path d="M10 11v6"></path>
+                            <path d="M14 11v6"></path>
+                        </svg>
+                    </button>
                 </div>
             `;
 
